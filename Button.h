@@ -19,20 +19,21 @@ public:
 
   bool isPressed(){
     currentState = digitalRead(pin);
-
+    
     if(lastState == HIGH && currentState == LOW)        // button is pressed
       pressedTime = millis();
+      
     else if(lastState == LOW && currentState == HIGH) { // button is released
       releasedTime = millis();
-
-    long pressDuration = releasedTime - pressedTime;
-    if( pressDuration < SHORT_PRESS_TIME ){
-      Serial.println("A short press is detected");
+      long pressDuration = releasedTime - pressedTime;
+      if( pressDuration < SHORT_PRESS_TIME ){
+        Serial.println("A short press is detected");
+        lastState = currentState;
+        return true;
+      }   
     }
-    return pressDuration < SHORT_PRESS_TIME;
-  }
-
-  lastState = currentState;
+    lastState = currentState;
+    return false;
   }
   
 private:

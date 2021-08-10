@@ -56,6 +56,7 @@ void loop() {
   time++;
   Enums::State state = robot.getState();
   checkButton(state);
+  
   switch (state) {
     case gridEnum.Turning:
       Serial.println("Turning");
@@ -84,7 +85,8 @@ void loop() {
 }
 
 void checkButton(Enums::State state){
-  if (button.isPressed()){  
+  if (button.isPressed()){
+    Serial.println("------------------------------pressed");
     switch (state) {
       case gridEnum.End:
         robot.setState(gridEnum.ProcessingNextCommand);
