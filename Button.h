@@ -26,8 +26,10 @@ public:
       releasedTime = millis();
 
     long pressDuration = releasedTime - pressedTime;
-    if( pressDuration < SHORT_PRESS_TIME )
+    if( pressDuration < SHORT_PRESS_TIME ){
       Serial.println("A short press is detected");
+    }
+    return pressDuration < SHORT_PRESS_TIME;
   }
 
   lastState = currentState;

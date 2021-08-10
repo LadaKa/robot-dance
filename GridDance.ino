@@ -39,7 +39,7 @@ void setup() {
   robot.setPose(
     start_position_x, start_position_y, start_orientation, start_direction);
   robot.setState(
-    gridEnum.ProcessingNextCommand);
+    gridEnum.End);
   button.setPin(BUTTON_PIN);
   if (Serial.available()){
     defaultChoreo = false;
@@ -54,41 +54,45 @@ void setup() {
 void loop() {
   
   time++;
-  
   Enums::State state = robot.getState();
-  
+  checkButton(state);
   switch (state) {
-  case gridEnum.Turning:
+    case gridEnum.Turning:
       Serial.println("Turning");
       robot.turn();
       return;
-  case gridEnum.Running:
+    case gridEnum.Running:
       Serial.println("running");
       robot.updateAndGoStraight();
       return;
-  case gridEnum.Waiting:
+    case gridEnum.Waiting:
       Serial.println("waiting");
       robot.wait(time);
       return;
-  case gridEnum.ProcessingNextCommand: //TODO
+    case gridEnum.ProcessingNextCommand: //TODO
       Serial.println("next");
       if (defaultChoreo){
         robot.processNextDefaultCommand();
       }
       else {
         // parser 
-      }
-      
+      }     
       return;
-  case gridEnum.End:
+    case gridEnum.End:
       return;
   }
-  checkButton();
 }
 
-void checkButton(){
-  if (button.isPressed()){
-    Serial.println("BUTTON");
-    robot.setState(gridEnum.End);
+void checkButton(Enums::State state){
+  if (button.isPressed()){  
+    switch (state) {
+      case gridEnum.End:
+        robot.setState(gridEnum.ProcessingNextCommand);
+        return;
+      default:
+        //TODO: go to start
+        robot.setState(gridEnum.End);
+        return;
+    }
   }
 }
