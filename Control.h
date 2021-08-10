@@ -67,7 +67,7 @@ private:
   void turnLeft()
   {
     Serial.println("LEFT");
-    _leftMotor.go(_speed / 2);
+    _leftMotor.go(_speed );
     _rightMotor.stop();
   }
 
@@ -75,7 +75,7 @@ private:
   {
     Serial.println("RIGHT");
     _leftMotor.stop();
-    _rightMotor.go(_speed / 2);
+    _rightMotor.go(_speed );
   }
 
 

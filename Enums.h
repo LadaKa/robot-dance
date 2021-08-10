@@ -97,9 +97,9 @@ class Enums
       Orientation target_orientation) 
       {
         if (target_orientation == getNextOrientation(orientation))
-           return Left;
-        if (target_orientation == getPreviousOrientation(orientation))
            return Right;
+        if (target_orientation == getPreviousOrientation(orientation))
+           return Left;
         if (isInTheCorner(position_x, position_y))
            return chooseDirectionInTheCorner(position_x, position_y, orientation);
         return Right;

@@ -45,14 +45,14 @@ void setup() {
     defaultChoreo = false;
   }
   else {
-    setDefaultChoreo(robot);
+    robot.setDefaultChoreo();
   }
 Serial.println(defaultChoreo);
   
 }
 
 void loop() {
-  return;    
+  
   time++;
   
   Enums::State state = robot.getState();
@@ -86,21 +86,12 @@ void loop() {
   case gridEnum.End:
       return;
   }
+  checkButton();
 }
 
 void checkButton(){
   if (button.isPressed()){
-    //case gridEnum.End:
-      //..
+    Serial.println("BUTTON");
+    robot.setState(gridEnum.End);
   }
-}
-
-void setDefaultChoreo(Robot robot){
-  Serial.println("setting commands");
-  Commands commands(2);
-  commands.addCommand(Command(gridEnum.B, 2, 30));
-  commands.addCommand(Command(gridEnum.D, 1, 30));
-  
-  robot.setCommands(commands);
-  
 }
