@@ -59,7 +59,6 @@ private:
 
   void moveForward()
   {
-    Serial.println("FORWARD");
     _leftMotor.go(_speed);
     _rightMotor.go(_speed);
   }

@@ -27,7 +27,7 @@ private:
   Enums::State state;
   int next_steps;
   int next_turning_steps = 0;
-  int turning_steps_count = 30;
+  int turning_steps_count = 60;
   Commands commands;
 
 
@@ -66,11 +66,6 @@ public:
   void setCommands(Commands cmds)
   {
     commands = cmds;
-    /*if (commands.hasNextCommand()) 
-    {
-      Command cmd = commands.getNextCommand();
-      processNextCommand(cmd);
-    }*/
   }
   
 
@@ -95,7 +90,6 @@ public:
       Serial.println("bef Cr");
     }
     else if (sensors.MIDDLE) {
-      Serial.println("Cl");
       moveCloserToLine();
       return;
     }
@@ -104,7 +98,7 @@ public:
 
   void turn()
   {
-    Serial.print(" ");
+    Serial.print("steps ");
     Serial.println(next_turning_steps);
     Serial.print(orientation );
     Serial.println(target_orientation);
@@ -151,17 +145,6 @@ public:
     if (time >= target_time){
       state = gridEnum.ProcessingNextCommand;
     }
-    /*if (time >= target_time) {
-      if (commands.hasNextCommand()) {   
-        Command cmd = commands.getNextCommand();
-        processNextCommand(cmd);
-      }
-      else {
-        control.stop();
-        state = gridEnum.End;
-        Serial.println("YES END"); 
-      }
-    }*/
   }
 
   void processNextDefaultCommand(){
@@ -187,18 +170,13 @@ public:
     // TODO
     //target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
     //      setStateByOrientation();
-    target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
+    target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
     setStateByOrientation();
   }
 
   void setDefaultChoreo(){
-  Serial.println("setting commands");
-  //Commands commands(2);
-  commands.addCommand(Command(gridEnum.B, 2, 30));
-  commands.addCommand(Command(gridEnum.D, 1, 30));
-  
-  //robot.setCommands(commands);
-  
+    commands.addCommand(Command(gridEnum.B, 2, 30));
+    commands.addCommand(Command(gridEnum.D, 1, 30));
 }
 
 private:

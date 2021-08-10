@@ -24,28 +24,11 @@ public:
 	{   
 		commandsArray[last+1] = command;
     last++;
-   Serial.print(commandsArray[0].x);
-  Serial.println(commandsArray[0].y);
-  Serial.print(commandsArray[1].x);
-  Serial.println(commandsArray[1].y);
-  Serial.print(commandsArray[2].x);
-  Serial.println(commandsArray[2].y);
-  Serial.println(last);
-  Serial.println();
+   
 	}
 
 	bool hasNextCommand()
 	{
-    Serial.println("Has ");
-    Serial.print(commandsArray[0].x);
-  Serial.println(commandsArray[0].y);
-  Serial.print(commandsArray[1].x);
-  Serial.println(commandsArray[1].y);
-  Serial.print(commandsArray[2].x);
-  Serial.println(commandsArray[2].y);
-  Serial.println(last);
-  Serial.println();
-    Serial.println(last);
 		return (last > -1 && first <= last);
 	}
 

@@ -40,14 +40,14 @@ void setup() {
     start_position_x, start_position_y, start_orientation, start_direction);
   robot.setState(
     gridEnum.ProcessingNextCommand);
-    button.setPin(BUTTON_PIN);
+  button.setPin(BUTTON_PIN);
   if (Serial.available()){
     defaultChoreo = false;
   }
   else {
     robot.setDefaultChoreo();
   }
-Serial.println(defaultChoreo);
+  Serial.println(defaultChoreo);
   
 }
 
@@ -58,23 +58,20 @@ void loop() {
   Enums::State state = robot.getState();
   
   switch (state) {
-  case gridEnum.BeforeStart:
-  Serial.println("BeforeStart");
-      return;
   case gridEnum.Turning:
-  Serial.println("Turning");
+      Serial.println("Turning");
       robot.turn();
       return;
   case gridEnum.Running:
-  Serial.println("running");
+      Serial.println("running");
       robot.updateAndGoStraight();
       return;
   case gridEnum.Waiting:
-  Serial.println("waiting");
+      Serial.println("waiting");
       robot.wait(time);
       return;
   case gridEnum.ProcessingNextCommand: //TODO
-  Serial.println("next");
+      Serial.println("next");
       if (defaultChoreo){
         robot.processNextDefaultCommand();
       }
