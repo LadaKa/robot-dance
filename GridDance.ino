@@ -2,6 +2,7 @@
 #include "Enums.h"
 #include "Robot.h"
 #include "Button.h"
+#include "Parser.h"
 
 #define MIN_PULSE  500
 #define MAX_PULSE 2500
@@ -23,7 +24,7 @@ int time; // millis() ?
 Robot robot;
 Enums gridEnum;
 Button button;
-
+Parser parser;
 
 Enums::Position_X  start_position_x = gridEnum.A;
 int start_position_y = 1;   

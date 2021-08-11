@@ -8,46 +8,69 @@ class Parser {
 
 public:
 
-  Parser(){
+  Parser(){}
+
+  Parser(int max_x, int max_y){
+    maxX = max_x;
+    maxY = max_y;
     inputAvailable = Serial.available();
   }
   
-  // TODO: string for y = 10
   void readNextCommand(){
-    char firstCoord;   
-    char secondCoord;
-    char char1;
-    char char2;
-    ch1 = toupper(readNextNonWhitespace());
-    ch2 = toupper(readNextNonWhitespace());
-    if ( !inputAvailable ){
-      Serial.println("Missing coordinates.");
-      hasError = true;
-    }
-    else {
-      createCommandCoordinates(ch1, ch2);
-      if ( hasError )
-        return;
-      
-    }
+
+    command = readCommandWithCoordinates();
+    if ( hasError )
+      return;
+    int time = readTimeExpression();
+    if ( hasError )
+      return;   
+    command.setTime(time);
+    hasCommand = true;
+  }
+
+  bool hasNextCommand(){
+    return hasCommand;
+  }
+
+  Command getNextCommand(){
+    hasCommand = false;
+    return command;
   }
   
 private:
 
   const int MAX_TIME_DIGITS = 10;  
   
-
+  int maxX = 0;
+  int maxY = 0;
+  
   bool inputAvailable;
-  bool hasCommand = false;
+  char lastChar = 0;
   bool hasError = false;
+  
   Command command;
-  Enums::Position_X position_x;
-  int position_y;
+  bool hasCommand = false;
 
+  Enums gridEnum;
+  
+  Command readCommandWithCoordinates(){
+    
+    char firstCoord;   
+    char secondCoord;
+    char ch1 = toupper(readNextNonWhitespace());
+    char ch2 = toupper(readNextNonWhitespace());
+    if ( !inputAvailable ){
+      Serial.println("Missing coordinates.");
+      hasError = true;
+      return;
+    }
+    return createCommandWithCoordinates(ch1, ch2);
+  }
 
   char readNextNonWhitespace(){
+    
     char ch = 32;
-    while ( (ch == 9) || (ch == 10) || (ch == 13) || (ch == 32)){
+    while ((ch == 9) || (ch == 10) || (ch == 13) || (ch == 32)){
       if (Serial.available())
         ch = Serial.read();
       else {
@@ -58,8 +81,8 @@ private:
     return ch;
   }
 
-  // time without whitespaces: 't100'
-  int readNextTime(){
+  // time without whitespaces: 't[0-9]+'
+  int readTimeExpression(){
     
     char t = readNextNonWhitespace();
     if (tolower(t) != 't') {
@@ -67,35 +90,83 @@ private:
       hasError = true;
       return -1;
     }
-    
-    char digits;
-    char d = '0';
-   /* while ( isdigit(d) ) {
-      if (Serial.available()){
+    return readDigits();
+  }
+
+  int readDigits(){
+    char digits[MAX_TIME_DIGITS];
+    int index = 0;
+    char d;
+    // at least one digit needed
+    if (Serial.available()){
         d = Serial.read();
+        if (!isdigit(d)){
+          Serial.println("Missing time value.");
+          hasError = true;
+          return digits;
+        }
+        digits[index] = d;
+        index++;
+    }
+    while (Serial.available()){
+      d = Serial.read();
+      if (isdigit(d)){
+        digits[index] = d;
+        index++;
       }
       else {
-        inputAvailable = false;
+        lastChar = d;
         break;
       }   
-    }*/
-    
+    }
+    return atoi(digits);
   }
 
-  void createCommandCoordinates(char ch1, char ch2){
+  Command createCommandWithCoordinates(char ch1, char ch2){
+    
+    Enums::Position_X position_x;
+    int position_y;
+
+    Command result;
+    
     if (isalpha(ch1) && isdigit(ch2)){
-      position_x = Enums::getPositionX_ByUpperChar(ch1);
+      position_x = gridEnum.getPositionX_ByUpperChar(ch1);
       position_y = ch2 - '0';
-    };
+      result = Command(position_x, position_y);
+    }
     else if (isdigit(ch1) && isalpha(ch2)){
-      position_x = Enums::getPositionX_ByUpperChar(ch2);
+      position_x = gridEnum.getPositionX_ByUpperChar(ch2);
       position_y = ch1 - '0';
+      result = Command(position_y, position_x);
     }
     else {
-      Serial.println(
-        "Invalid coordinates: " + ch1 + "," + ch2 + ".");
+     // Serial.println(
+     //   "Invalid coordinates: " + ch1 + "," + ch2 + ".");
       hasError = true;
+      return;
+    }
+    if (checkCoordinates(position_x, position_y)){
+      return command;
+    }
+    else {
+      hasError = true;
+      return;
     }
   }
 
-}
+  bool checkCoordinates(Enums::Position_X position_x, int position_y){
+    bool valid = true;
+    char x = gridEnum.getPositionX_AsChar(position_x);
+    if ((x -'A') > maxX){
+      valid = false;
+    //  Serial.println("X-coordinate " + x + " exceeds max value.");
+    }
+    if (position_y > maxY) {
+      valid = false;
+     // Serial.println("Y-coordinate " + position_y + " exceeds max value.");
+    }
+    return valid;
+  }
+};
+
+#endif

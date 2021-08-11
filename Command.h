@@ -10,23 +10,35 @@ class Command
 	public:
 		Enums::Position_X x;
 		int y;
-		int time;
+		int time = 0;
+    bool orderedCoordinates;
 
     Command(){}
 
-		Command(Enums::Position_X position_x, int position_y, int t)
+		Command(Enums::Position_X position_x, int position_y)
 		{
       x = position_x;
       y = position_y;
-			time = t;
+      orderedCoordinates = true;
 		}
 
-   Command(int position_y, Enums::Position_X position_x, int t)
+   Command(int position_y, Enums::Position_X position_x)
    {
       x = position_x;
       y = position_y;
-      time = t;
-    }
+      orderedCoordinates = false;
+   }
+
+   Command(Enums::Position_X position_x, int position_y, bool orderedCoords)
+   {
+      x = position_x;
+      y = position_y;
+      orderedCoordinates = orderedCoords;
+   }
+
+   void setTime(int t){
+    time = t;
+   }
 };
 
 #endif

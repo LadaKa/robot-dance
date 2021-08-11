@@ -44,6 +44,10 @@ class Enums
       return String(1, x+'A');
     }
 
+    char getPositionX_AsChar(Position_X x){
+      return x+'A';
+    }
+
     Orientation getNextOrientation(Orientation orientation)
     {
       return static_cast<Orientation>((orientation + 1) % 4);
