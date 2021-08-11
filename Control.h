@@ -66,15 +66,15 @@ private:
   void turnLeft()
   {
     Serial.println("LEFT");
-    _leftMotor.go(_speed );
-    _rightMotor.stop();
+    _leftMotor.go(_speed/2 );
+    _rightMotor.go(-_speed/2 );
   }
 
   void turnRight()
   {
     Serial.println("RIGHT");
-    _leftMotor.stop();
-    _rightMotor.go(_speed );
+    _leftMotor.go(-_speed/2 );
+    _rightMotor.go(_speed/2 );
   }
 
 

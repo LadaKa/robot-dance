@@ -9,12 +9,22 @@
 #define RIGHT_PIN 12
 #define BUTTON_PIN 2
 
-int time;
+/*
+ * TODO:  decrease turning angle when follow line
+ *        proper grid structure: enums -> class
+ *        parser
+ *        commands with (y, x) coordinate
+ *        check orientation and count of steps before crossing
+ *        grid size as params
+ *        go to start on button press
+ */
+
+int time; // millis() ?
 Robot robot;
 Enums gridEnum;
 Button button;
 
-//   TODO:  proper grid structure: enums -> class
+
 Enums::Position_X  start_position_x = gridEnum.A;
 int start_position_y = 1;   
 
@@ -31,7 +41,7 @@ void setup() {
   
   start_position_x = gridEnum.A;
   start_position_y = 1;
-  start_orientation = gridEnum.North;
+  start_orientation = gridEnum.East;
   start_direction = gridEnum.Forward;
 
   robot.setMotorsAndSpeed(
@@ -41,6 +51,7 @@ void setup() {
   robot.setState(
     gridEnum.End);
   button.setPin(BUTTON_PIN);
+
   if (Serial.available()){
     defaultChoreo = false;
   }
@@ -54,6 +65,7 @@ void setup() {
 void loop() {
   
   time++;
+  
   Enums::State state = robot.getState();
   checkButton(state);
   
@@ -63,20 +75,20 @@ void loop() {
       robot.turn();
       return;
     case gridEnum.Running:
-      Serial.println("running");
+      Serial.println("Running");
       robot.updateAndGoStraight();
       return;
     case gridEnum.Waiting:
-      Serial.println("waiting");
+      Serial.println("Waiting");
       robot.wait(time);
       return;
-    case gridEnum.ProcessingNextCommand: //TODO
-      Serial.println("next");
+    case gridEnum.ProcessingNextCommand: 
+      Serial.println("ProcessingNextCommand");
       if (defaultChoreo){
         robot.processNextDefaultCommand();
       }
       else {
-        // parser 
+        // TODO: parser 
       }     
       return;
     case gridEnum.End:
@@ -86,7 +98,6 @@ void loop() {
 
 void checkButton(Enums::State state){
   if (button.isPressed()){
-    Serial.println("------------------------------pressed");
     switch (state) {
       case gridEnum.End:
         robot.setState(gridEnum.ProcessingNextCommand);
