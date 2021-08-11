@@ -20,6 +20,13 @@ class Command
       y = position_y;
 			time = t;
 		}
+
+   Command(int position_y, Enums::Position_X position_x, int t)
+   {
+      x = position_x;
+      y = position_y;
+      time = t;
+    }
 };
 
 #endif

@@ -8,7 +8,6 @@ class Enums
 	public:
 		typedef enum
 		{
-			BeforeStart,
 			Turning,
 			Running,
 			Waiting,
@@ -36,6 +35,14 @@ class Enums
 		{
 			A, B, C, D, E
 		} Position_X;
+
+    Position_X getPositionX_ByUpperChar(char ch){
+      return (Position_X)(ch-'A');
+    }
+
+    String getPositionX_AsString(Position_X x){
+      return String(1, x+'A');
+    }
 
     Orientation getNextOrientation(Orientation orientation)
     {
