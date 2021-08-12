@@ -8,6 +8,7 @@
 class Command
 {
 	public:
+  // TODO: private + getter
 		Enums::Position_X x;
 		int y;
 		int time = 0;

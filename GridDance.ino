@@ -13,7 +13,6 @@
 /*
  * TODO:  decrease turning angle when follow line
  *        proper grid structure: enums -> class
- *        parser
  *        commands with (y, x) coordinate
  *        check orientation and count of steps before crossing
  *        grid size as params

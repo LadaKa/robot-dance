@@ -160,8 +160,12 @@ public:
     target_y = cmd.y;
     target_time = cmd.time;
     // TODO:  commands with (y, x) coordinate
-    
-    target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
+    if (cmd.orderedCoordinates){
+      target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
+    }
+    else {
+      target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
+    }
     setStateByOrientation();
   }
 
