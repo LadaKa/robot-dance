@@ -8,6 +8,7 @@ class Enums
 	public:
 		typedef enum
 		{
+      BeforeStart,
 			Turning,
 			Running,
 			Waiting,

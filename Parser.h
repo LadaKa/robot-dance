@@ -8,16 +8,17 @@ class Parser {
 
 public:
 
-  Parser(){}
+  Parser(){
+  }
 
-  Parser(int max_x, int max_y){
+  void setSize(int max_x, int max_y){
     maxX = max_x;
     maxY = max_y;
-    inputAvailable = Serial.available();
   }
   
   void readNextCommand(){
 
+    inputAvailable = Serial.available();
     command = readCommandWithCoordinates();
     if ( hasError )
       return;
@@ -57,7 +58,14 @@ private:
     
     char firstCoord;   
     char secondCoord;
-    char ch1 = toupper(readNextNonWhitespace());
+    char ch1;
+    if (lastChar!=0){
+      ch1 = toupper(lastChar);
+      lastChar = 0;
+    }
+    else {
+      ch1 = toupper(readNextNonWhitespace());
+    }
     char ch2 = toupper(readNextNonWhitespace());
     if ( !inputAvailable ){
       Serial.println("Missing coordinates.");
@@ -78,6 +86,7 @@ private:
         break;
       }   
     }
+    
     return ch;
   }
 
@@ -140,13 +149,12 @@ private:
       result = Command(position_y, position_x);
     }
     else {
-     // Serial.println(
-     //   "Invalid coordinates: " + ch1 + "," + ch2 + ".");
+      Serial.println("Invalid coordinates.");
       hasError = true;
       return;
     }
     if (checkCoordinates(position_x, position_y)){
-      return command;
+      return result;
     }
     else {
       hasError = true;
@@ -159,11 +167,11 @@ private:
     char x = gridEnum.getPositionX_AsChar(position_x);
     if ((x -'A') > maxX){
       valid = false;
-    //  Serial.println("X-coordinate " + x + " exceeds max value.");
+      Serial.println("X-coordinate exceeds max value.");
     }
     if (position_y > maxY) {
       valid = false;
-     // Serial.println("Y-coordinate " + position_y + " exceeds max value.");
+      Serial.println("Y-coordinate exceeds max value.");
     }
     return valid;
   }

@@ -26,41 +26,41 @@ Enums gridEnum;
 Button button;
 Parser parser;
 
-Enums::Position_X  start_position_x = gridEnum.A;
-int start_position_y = 1;   
+int x_size;
+int y_size;
 
-Enums::Orientation start_orientation = gridEnum.North;
-Enums::Direction start_direction = gridEnum.Forward;
+Enums::Position_X  start_position_x;
+int start_position_y;  
+
+Enums::Orientation start_orientation;
+Enums::Direction start_direction;
 Enums::State start_state;
 
 bool defaultChoreo = true;
+
 
 void setup() {
 
   time = 0;
   Serial.begin(9600);
+
+  x_size = 5;
+  y_size = 5;
   
   start_position_x = gridEnum.A;
   start_position_y = 1;
   start_orientation = gridEnum.East;
   start_direction = gridEnum.Forward;
 
+  button.setPin(BUTTON_PIN);
+
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 30);
   robot.setPose(
     start_position_x, start_position_y, start_orientation, start_direction);
   robot.setState(
-    gridEnum.End);
-  button.setPin(BUTTON_PIN);
-
-  if (Serial.available()){
-    defaultChoreo = false;
-  }
-  else {
-    robot.setDefaultChoreo();
-  }
-  Serial.println(defaultChoreo);
-  
+    gridEnum.BeforeStart);
+  Serial.println("Before Start - waiting for button press.");
 }
 
 void loop() {
@@ -71,6 +71,8 @@ void loop() {
   checkButton(state);
   
   switch (state) {
+    case gridEnum.BeforeStart:
+      return;
     case gridEnum.Turning:
       Serial.println("Turning");
       robot.turn();
@@ -89,7 +91,7 @@ void loop() {
         robot.processNextDefaultCommand();
       }
       else {
-        // TODO: parser 
+        processNextSerialInputCommand(); 
       }     
       return;
     case gridEnum.End:
@@ -100,13 +102,36 @@ void loop() {
 void checkButton(Enums::State state){
   if (button.isPressed()){
     switch (state) {
-      case gridEnum.End:
+      case gridEnum.BeforeStart:
+        start();
         robot.setState(gridEnum.ProcessingNextCommand);
         return;
       default:
-        //TODO: go to start
+        //TODO: go to start position
         robot.setState(gridEnum.End);
         return;
     }
+  }
+}
+
+void start(){
+  if (Serial.available()){
+    defaultChoreo = false;
+    parser.setSize(x_size, y_size);
+  }
+  else {
+    robot.setDefaultChoreo();
+  }
+  Serial.println("Start");
+}
+
+void processNextSerialInputCommand(){
+  parser.readNextCommand();
+  if (parser.hasNextCommand()){
+    robot.processNextCommand(parser.getNextCommand());
+  }
+  else {
+    Serial.println("End");
+    robot.end();
   }
 }

@@ -138,27 +138,29 @@ public:
     }
   }
 
+  void end() {
+    control.stop();
+    state = gridEnum.End;
+  }
+
+
   void processNextDefaultCommand(){
     if (commands.hasNextCommand()) {   
         Command cmd = commands.getNextCommand();
         processNextCommand(cmd);
       }
       else {
-        control.stop();
-        state = gridEnum.End;
-        Serial.println("END"); 
+        end();
       }
   };
 
   void processNextCommand(Command cmd)
   {
-    Serial.println("next cmd:");
-    Serial.print(cmd.x);
-    Serial.println(cmd.y);
     target_x = cmd.x;
     target_y = cmd.y;
     target_time = cmd.time;
     // TODO:  commands with (y, x) coordinate
+    
     target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
     setStateByOrientation();
   }
