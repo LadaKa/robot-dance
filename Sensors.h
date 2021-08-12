@@ -32,11 +32,11 @@ class Sensors
 		L_INNER = 1-digitalRead(6);
 		L_OUTER = 1-digitalRead(7); 
     
-    Serial.print(L_OUTER);
+    /*Serial.print(L_OUTER);
     Serial.print(L_INNER);
     Serial.print(MIDDLE);
     Serial.print(R_INNER);
-    Serial.println(R_OUTER);
+    Serial.println(R_OUTER);*/
 	}
 
 

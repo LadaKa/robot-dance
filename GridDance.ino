@@ -11,12 +11,11 @@
 #define BUTTON_PIN 2
 
 /*
- * TODO:  decrease turning angle when follow line
+ * TODO:  
  *        proper grid structure: enums -> class
- *        commands with (y, x) coordinate
- *        check orientation and count of steps before crossing
- *        grid size as params
- *        go to start on button press
+ *        grid size as param
+ *        start position as parsed param
+ *        go to start position button press
  */
 
 int time; // millis() ?
@@ -28,6 +27,7 @@ Parser parser;
 int x_size;
 int y_size;
 
+// TODO: move start position to robot class
 Enums::Position_X  start_position_x;
 int start_position_y;  
 
@@ -63,7 +63,8 @@ void setup() {
 }
 
 void loop() {
-  
+
+  delay(100);
   time++;
   
   Enums::State state = robot.getState();
@@ -73,15 +74,12 @@ void loop() {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
-      Serial.println("Turning");
       robot.turn();
       return;
     case gridEnum.Running:
-      Serial.println("Running");
       robot.updateAndGoStraight();
       return;
     case gridEnum.Waiting:
-      Serial.println("Waiting");
       robot.wait(time);
       return;
     case gridEnum.ProcessingNextCommand: 
@@ -107,7 +105,8 @@ void checkButton(Enums::State state){
         return;
       default:
         //TODO: go to start position
-        robot.setState(gridEnum.End);
+        //robot.setState(gridEnum.End);
+        robot.end();
         return;
     }
   }

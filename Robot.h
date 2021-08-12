@@ -17,7 +17,7 @@ private:
   Enums::Direction direction;
   Enums::Orientation orientation;
   Enums::Position_X position_x;
-  int position_y; // !!
+  int position_y; 
 
   int target_time = 0;
   Enums::Orientation target_orientation;
@@ -27,7 +27,7 @@ private:
   Enums::State state;
   int next_steps;
   int next_turning_steps = 0;
-  int turning_steps_count = 20;
+  int turning_steps_count = 50;
   Commands commands;
 
 
@@ -76,11 +76,9 @@ public:
 
 
   void updateAndGoStraight() {
-    
     sensors.readSensors();
     if (next_steps > 0) {
       goToCrossing();
-      Serial.println(next_steps);
     }
     else if (sensors.getAnyOUTER()) {
       updateStateBeforeCrossing();
@@ -156,36 +154,62 @@ public:
 
   void processNextCommand(Command cmd)
   {
+
     target_x = cmd.x;
     target_y = cmd.y;
     target_time = cmd.time;
-    // TODO:  commands with (y, x) coordinate
+
+    Serial.print("Current position: ");
+    Serial.print(gridEnum.getPositionX_AsChar(position_x));
+    Serial.println(position_y);
+    Serial.print("Target position: ");
+    Serial.print(gridEnum.getPositionX_AsChar(target_x));
+    Serial.println(target_y);
+
+    if (( position_x == target_x) && ( position_y == target_y)){
+      state = Enums::Waiting;
+      control.stop();
+    }
+    
     if (cmd.orderedCoordinates){
-      target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
+      if ( position_x != target_x)
+        target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
+      else 
+        target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
     }
     else {
-      target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
+      if ( position_y != target_y)
+        target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
+      else 
+        target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
     }
     setStateByOrientation();
   }
 
   void setDefaultChoreo(){
-    commands.addCommand(Command(gridEnum.C, 1, 30));
-    //commands.addCommand(Command(gridEnum.D, 1, 30));
-}
+    commands.addCommand(Command(gridEnum.C, 1, 0));
+    commands.addCommand(Command(gridEnum.D, 1, 0));
+    commands.addCommand(Command(gridEnum.D, 2, 0));
+  }
 
 private:
 
   void goToCrossing() {
+    
     next_steps = next_steps - 1;
     control.move(direction);
     if (next_steps == 0)
     {
+      Serial.print("Before crossing; last position: ");
+      Serial.print(gridEnum.getPositionX_AsChar(position_x));
+      Serial.println(position_y);
+      
       sensors.setOuterSensorStateToWhite();
-      if (target_x == position_x)        //  y x !!!!!
+      if (target_x == position_x)       
       {
         if (target_y == position_y)
         {
+          Serial.println("Waiting");
           state = Enums::Waiting;
           control.stop();
         }
@@ -200,7 +224,6 @@ private:
         target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
         setStateByOrientation();
       }
-
     }
   }
 
@@ -222,7 +245,7 @@ private:
     if (sensors.isOnEdge())
     {
       updatePosition();
-      next_steps = 1;
+      next_steps = 5;
     }
   }
 
@@ -268,8 +291,6 @@ private:
     }
   }
 
-  
-  
 };
 
 #endif#

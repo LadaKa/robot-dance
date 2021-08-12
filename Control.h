@@ -29,8 +29,6 @@ public:
   void setSpeed(int speed, int turnSpeed)
   {
     _speed = speed;
-    //_turnPosSpeed =   turnSpeed;
-    //_turnNegSpeed = - turnSpeed;
   }
 
   void move(Enums::Direction direction) {
@@ -65,14 +63,12 @@ private:
 
   void turnLeft()
   {
-    Serial.println("LEFT");
     _leftMotor.go(_speed/2 );
     _rightMotor.go(-_speed/2 );
   }
 
   void turnRight()
   {
-    Serial.println("RIGHT");
     _leftMotor.go(-_speed/2 );
     _rightMotor.go(_speed/2 );
   }

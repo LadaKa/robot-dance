@@ -34,29 +34,32 @@ class Enums
 
 		typedef enum
 		{
-			A, B, C, D, E
+			A = 1, 
+			B = 2, 
+			C = 3, 
+			D = 4, 
+			E = 5
 		} Position_X;
 
     Position_X getPositionX_ByUpperChar(char ch){
       return (Position_X)(ch-'A');
     }
 
-    String getPositionX_AsString(Position_X x){
-      return String(1, x+'A');
-    }
 
     char getPositionX_AsChar(Position_X x){
-      return x+'A';
+      return x+'A'-1;
     }
 
-    Orientation getNextOrientation(Orientation orientation)
+    int getNextOrientation(Orientation orientation)
     {
-      return static_cast<Orientation>((orientation + 1) % 4);
+      //return static_cast<Orientation>((orientation + 1) % 4);
+      return ((orientation + 1) % 4);
     }
 
-    Orientation getPreviousOrientation(Orientation orientation)
+    int getPreviousOrientation(Orientation orientation)
     {
-      return static_cast<Orientation>((orientation + 4 - 1) % 4);
+      //return static_cast<Orientation>((orientation + 4 - 1) % 4);
+      return ((orientation + 4 - 1) % 4);
     }
 
     Position_X getNextPosition_X(Position_X position_X)
