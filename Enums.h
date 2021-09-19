@@ -34,11 +34,11 @@ class Enums
 
 		typedef enum
 		{
-			A = 1, 
-			B = 2, 
-			C = 3, 
-			D = 4, 
-			E = 5
+			A = 0, 
+			B = 1, 
+			C = 2, 
+			D = 3, 
+			E = 4
 		} Position_X;
 
     Position_X getPositionX_ByUpperChar(char ch){
@@ -47,7 +47,7 @@ class Enums
 
 
     char getPositionX_AsChar(Position_X x){
-      return x+'A'-1;
+      return x+'A';
     }
 
     int getNextOrientation(Orientation orientation)

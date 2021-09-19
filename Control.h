@@ -14,6 +14,7 @@ public:
    *   the pulse width [microsec]:
    *   min_pulse ~   0-degree angle on the servo (defaults to  544)
    *   max_pulse ~ 180-degree angle on the servo (defaults to 2400)
+   *   
   */
   void setMotors(int leftPin, int rightPin, int minPulse, int maxPulse)
   {

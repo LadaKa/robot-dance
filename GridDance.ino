@@ -4,8 +4,8 @@
 #include "Button.h"
 #include "Parser.h"
 
-#define MIN_PULSE  500
-#define MAX_PULSE 2500
+#define MIN_PULSE  544
+#define MAX_PULSE 2400
 #define LEFT_PIN  13
 #define RIGHT_PIN 12
 #define BUTTON_PIN 2
@@ -58,8 +58,9 @@ void setup() {
   robot.setPose(
     start_position_x, start_position_y, start_orientation, start_direction);
   robot.setState(
-    gridEnum.BeforeStart);
-  Serial.println("Before Start - waiting for button press.");
+    gridEnum.ProcessingNextCommand);
+  //Serial.println("Before Start - waiting for button press.");
+  start(); // DEBUG
 }
 
 void loop() {
@@ -68,8 +69,7 @@ void loop() {
   time++;
   
   Enums::State state = robot.getState();
-  checkButton(state);
-  
+  //checkButton(state);
   switch (state) {
     case gridEnum.BeforeStart:
       return;
@@ -100,6 +100,7 @@ void checkButton(Enums::State state){
   if (button.isPressed()){
     switch (state) {
       case gridEnum.BeforeStart:
+        Serial.println("Button pressed");
         start();
         robot.setState(gridEnum.ProcessingNextCommand);
         return;
@@ -129,7 +130,6 @@ void processNextSerialInputCommand(){
     robot.processNextCommand(parser.getNextCommand());
   }
   else {
-    Serial.println("End");
     robot.end();
   }
 }

@@ -92,17 +92,18 @@ public:
 
   void turn()
   {
-    if (next_turning_steps == 0)
+    if (next_turning_steps == 0)      // start of turning
     {
       next_turning_steps = turning_steps_count;
     }
-    else if (next_turning_steps > 1)
+    else if (next_turning_steps > 1)  // turning
     {
       next_turning_steps--;
     }
-    else
+    else                              // last turning step
     {
       updateOrientation();
+      printInfoAndPose("turn");
       if (orientation == target_orientation)
       {
         direction = gridEnum.Forward;
@@ -120,6 +121,7 @@ public:
     if (sensors.updateMiddleSensorState())
     {
       updateOrientation();
+      
       if (orientation == target_orientation)
       {
         direction = gridEnum.Forward;
@@ -145,6 +147,7 @@ public:
   void processNextDefaultCommand(){
     if (commands.hasNextCommand()) {   
         Command cmd = commands.getNextCommand();
+        
         processNextCommand(cmd);
       }
       else {
@@ -158,13 +161,6 @@ public:
     target_x = cmd.x;
     target_y = cmd.y;
     target_time = cmd.time;
-
-    Serial.print("Current position: ");
-    Serial.print(gridEnum.getPositionX_AsChar(position_x));
-    Serial.println(position_y);
-    Serial.print("Target position: ");
-    Serial.print(gridEnum.getPositionX_AsChar(target_x));
-    Serial.println(target_y);
 
     if (( position_x == target_x) && ( position_y == target_y)){
       state = Enums::Waiting;
@@ -187,9 +183,10 @@ public:
   }
 
   void setDefaultChoreo(){
-    commands.addCommand(Command(gridEnum.C, 1, 0));
-    commands.addCommand(Command(gridEnum.D, 1, 0));
-    commands.addCommand(Command(gridEnum.D, 2, 0));
+    
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));
+    //commands.addCommand(Command(gridEnum.D, 1, 0));
+    //commands.addCommand(Command(gridEnum.D, 2, 0));
   }
 
 private:
@@ -200,9 +197,7 @@ private:
     control.move(direction);
     if (next_steps == 0)
     {
-      Serial.print("Before crossing; last position: ");
-      Serial.print(gridEnum.getPositionX_AsChar(position_x));
-      Serial.println(position_y);
+      printInfoAndPose("before crossing");
       
       sensors.setOuterSensorStateToWhite();
       if (target_x == position_x)       
@@ -290,6 +285,28 @@ private:
       break;
     }
   }
+
+  void printInfoAndPose(String info)
+  {
+    printPose("    current: ", position_x, position_y, orientation);
+    printPose("target: ", target_x, target_y, target_orientation);
+    Serial.println("[" + info + "]");
+  }
+
+  void printPose(
+    String label,
+    Enums::Position_X pos_x, 
+    int pos_y, 
+    Enums::Orientation orient)
+  {
+    Serial.print(label);
+    Serial.print(gridEnum.getPositionX_AsChar(pos_x));
+    Serial.print(pos_y);
+    Serial.print(":");
+    Serial.print(orient);
+    Serial.print(orient+" ");
+  }
+  
 
 };
 
