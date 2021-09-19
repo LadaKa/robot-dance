@@ -32,11 +32,7 @@ class Sensors
 		L_INNER = 1-digitalRead(6);
 		L_OUTER = 1-digitalRead(7); 
     
-    /*Serial.print(L_OUTER);
-    Serial.print(L_INNER);
-    Serial.print(MIDDLE);
-    Serial.print(R_INNER);
-    Serial.println(R_OUTER);*/
+    //printSensors();
 	}
 
 
@@ -102,10 +98,14 @@ class Sensors
 	int L_OUTER, L_INNER, MIDDLE, R_INNER, R_OUTER;
 	StateSequence MIDDLE_State, OUTER_State;
 
-//private:
-
-
-	
+	void printSensors()
+  {
+    Serial.print(L_OUTER);
+    Serial.print(L_INNER);
+    Serial.print(MIDDLE);
+    Serial.print(R_INNER);
+    Serial.println(R_OUTER);
+  }
 
 
 

@@ -27,7 +27,7 @@ private:
   Enums::State state;
   int next_steps;
   int next_turning_steps = 0;
-  int turning_steps_count = 50;
+  int turning_steps_count = 5;
   Commands commands;
 
 
@@ -103,7 +103,7 @@ public:
     else                              // last turning step
     {
       updateOrientation();
-      printInfoAndPose("turn");
+      
       if (orientation == target_orientation)
       {
         direction = gridEnum.Forward;
@@ -185,8 +185,7 @@ public:
   void setDefaultChoreo(){
     
     commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));
-    //commands.addCommand(Command(gridEnum.D, 1, 0));
-    //commands.addCommand(Command(gridEnum.D, 2, 0));
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('D'), 1, 0));
   }
 
 private:
@@ -236,6 +235,7 @@ private:
   }
 
   void updateStateBeforeCrossing() {
+    Serial.print("-------------updateStateBeforeCrossing");;
     sensors.updateOuterSensorState();
     if (sensors.isOnEdge())
     {
@@ -246,13 +246,18 @@ private:
 
   void moveCloserToLine() {
     sensors.OUTER_State = sensors.White;
-    if (sensors.L_INNER) {
+    //Serial.print("SensorState:  ");
+    
+    if (sensors.L_INNER && !sensors.R_INNER) {
+      Serial.println("move left");
       control.move(gridEnum.Left);
     }
     else if (sensors.R_INNER) {
+      Serial.println("move right");
       control.move(gridEnum.Right);
     }
     else {
+      //Serial.println("move forw");
       control.move(gridEnum.Forward);
     }
   }

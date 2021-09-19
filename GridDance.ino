@@ -54,7 +54,7 @@ void setup() {
   button.setPin(BUTTON_PIN);
 
   robot.setMotorsAndSpeed(
-    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 30);
+    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 80);
   robot.setPose(
     start_position_x, start_position_y, start_orientation, start_direction);
   robot.setState(
@@ -65,7 +65,7 @@ void setup() {
 
 void loop() {
 
-  delay(100);
+  delay(300);
   time++;
   
   Enums::State state = robot.getState();
@@ -74,9 +74,11 @@ void loop() {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
+      Serial.println("Turning");
       robot.turn();
       return;
     case gridEnum.Running:
+      //Serial.println("Running");
       robot.updateAndGoStraight();
       return;
     case gridEnum.Waiting:
