@@ -81,7 +81,7 @@ void loop() {
     case gridEnum.Turning:
       Serial.println("Turning");
       robot.turn();
-      delay(300);
+      delay(580);
       return;
     case gridEnum.Running:
       //Serial.println("Running");

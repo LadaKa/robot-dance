@@ -27,7 +27,7 @@ private:
   Enums::State state;
   int next_steps;
   int next_turning_steps = 0;
-  int turning_steps_count = 5;
+  int turning_steps_count = 2;
   Commands commands;
 
 
@@ -94,15 +94,22 @@ public:
 
   void turn()
   {
-    if (next_turning_steps == 0)      // start of turning
+    /*if (next_turning_steps == 0)      // start of turning
     {
       next_turning_steps = turning_steps_count;
     }
     else if (next_turning_steps > 1)  // turning
     {
       next_turning_steps--;
+    }*/
+    if (next_turning_steps == 0)      // start of turning
+    {
+      next_turning_steps = turning_steps_count;
+      control.move(direction);
+      
     }
     else                              // last turning step
+
     {
       updateOrientation();
       
@@ -112,9 +119,11 @@ public:
         state = gridEnum.Running;
         return;
       }
+      
       next_turning_steps = turning_steps_count;
+      control.move(direction);
     }
-    control.move(direction);
+    //control.move(direction);
   }
 
   void updateAndTurn()
@@ -169,13 +178,14 @@ public:
       control.stop();
     }
     
-    if (cmd.orderedCoordinates){
+    if (cmd.orderedCoordinates){    // A1
       if ( position_x != target_x)
         target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
       else 
         target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
     }
-    else {
+    
+    else {                          // 1A
       if ( position_y != target_y)
         target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
       else 
@@ -249,7 +259,7 @@ private:
     sensors.updateOuterSensorState();
     updatePosition();
     next_steps = 1;
-    
+
   }
 
   void moveCloserToLine() {

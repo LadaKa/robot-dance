@@ -64,12 +64,14 @@ private:
 
   void turnLeft()
   {
+    //Serial.println("TURNING LEFT");
     _leftMotor.go(_speed/2 );
     _rightMotor.go(-_speed/2 );
   }
 
   void turnRight()
   {
+    ///Serial.println("TURNING Right");
     _leftMotor.go(-_speed/2 );
     _rightMotor.go(_speed/2 );
   }
