@@ -89,6 +89,7 @@ class Enums
             return x == target_x;
       }
    }
+   
     Orientation chooseOrientation_x(Position_X x, Position_X target_x) 
     {
       if (x < target_x) 
@@ -112,9 +113,9 @@ class Enums
       Orientation target_orientation) 
       {
         if (target_orientation == getNextOrientation(orientation))
-           return Right;
-        if (target_orientation == getPreviousOrientation(orientation))
            return Left;
+        if (target_orientation == getPreviousOrientation(orientation))
+           return Right;
         if (isInTheCorner(position_x, position_y))
            return chooseDirectionInTheCorner(position_x, position_y, orientation);
         return Right;
@@ -158,7 +159,6 @@ class Enums
       }
       return false;
     }
-
 	private:
 	
 };
