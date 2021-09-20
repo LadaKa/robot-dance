@@ -27,7 +27,9 @@ Parser parser;
 int x_size;
 int y_size;
 
-// TODO: move start position to robot class
+// TODO:  move start position to robot class
+//        fix grid orientation
+
 Enums::Position_X  start_position_x;
 int start_position_y;  
 
@@ -42,7 +44,10 @@ void setup() {
 
   time = 0;
   Serial.begin(9600);
+  
+  Serial.println("Hello after reset");  // top reset button -> memory clear test
 
+  
   x_size = 5;
   y_size = 5;
   
@@ -65,7 +70,7 @@ void setup() {
 
 void loop() {
 
-  delay(300);
+  //delay(300);
   time++;
   
   Enums::State state = robot.getState();
@@ -76,6 +81,7 @@ void loop() {
     case gridEnum.Turning:
       Serial.println("Turning");
       robot.turn();
+      delay(300);
       return;
     case gridEnum.Running:
       //Serial.println("Running");

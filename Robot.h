@@ -81,6 +81,8 @@ public:
       goToCrossing();
     }
     else if (sensors.getAnyOUTER()) {
+      Serial.println(
+        "---------------- update state before crossing ----------------");  
       updateStateBeforeCrossing();
     }
     else if (sensors.MIDDLE) {
@@ -183,9 +185,16 @@ public:
   }
 
   void setDefaultChoreo(){
-    
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('D'), 1, 0));
+
+    //  right turn A1 -> A2
+    //commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
+
+    //  forward
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('C'), 1, 0));
+
+    //  right turn to 2
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('C'), 2, 0));  
+
   }
 
 private:
@@ -193,7 +202,8 @@ private:
   void goToCrossing() {
     
     next_steps = next_steps - 1;
-    control.move(direction);
+    Serial.println(next_steps );
+    control.move(direction);  //  ?
     if (next_steps == 0)
     {
       printInfoAndPose("before crossing");
@@ -235,18 +245,15 @@ private:
   }
 
   void updateStateBeforeCrossing() {
-    Serial.print("-------------updateStateBeforeCrossing");;
+    Serial.println("---------------- update state before crossing ----------------");
     sensors.updateOuterSensorState();
-    if (sensors.isOnEdge())
-    {
-      updatePosition();
-      next_steps = 5;
-    }
+    updatePosition();
+    next_steps = 1;
+    
   }
 
   void moveCloserToLine() {
     sensors.OUTER_State = sensors.White;
-    //Serial.print("SensorState:  ");
     
     if (sensors.L_INNER && !sensors.R_INNER) {
       Serial.println("move left");
