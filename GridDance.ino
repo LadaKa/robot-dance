@@ -9,16 +9,16 @@
 #define LEFT_PIN  13
 #define RIGHT_PIN 12
 #define BUTTON_PIN 2
-
 /*
  * TODO:  
  *        proper grid structure: enums -> class
  *        grid size as param
  *        start position as parsed param
- *        go to start position button press
+ *        debug button press
+ *        go to start position on button press
  */
 
-int time; // millis() ?
+int time; 
 Robot robot;
 Enums gridEnum;
 Button button;
@@ -28,7 +28,6 @@ int x_size;
 int y_size;
 
 // TODO:  move start position to robot class
-//        fix grid orientation
 
 Enums::Position_X  start_position_x;
 int start_position_y;  
@@ -45,53 +44,50 @@ void setup() {
   time = 0;
   Serial.begin(9600);
   
-  Serial.println("Hello after reset");  // top reset button -> memory clear test
+  Serial.println("Setup");
 
-  
   x_size = 5;
   y_size = 5;
   
   start_position_x = gridEnum.A;
   start_position_y = 1;
-  start_orientation = gridEnum.East;
+  start_orientation = gridEnum.North;
   start_direction = gridEnum.Forward;
 
   button.setPin(BUTTON_PIN);
 
   robot.setMotorsAndSpeed(
-    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 80);
+    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 80);   // speed = 80
   robot.setPose(
     start_position_x, start_position_y, start_orientation, start_direction);
   robot.setState(
     gridEnum.ProcessingNextCommand);
-  //Serial.println("Before Start - waiting for button press.");
-  start(); // DEBUG
+  // DEBUG button
+  // Serial.println("Before Start - waiting for button press."); 
+  start(); // DEBUG button 
 }
 
 void loop() {
 
-  //delay(300);
-  time++;
+  time = millis();
   
   Enums::State state = robot.getState();
-  //checkButton(state);
+  //checkButton(state); //  DEBUG button
+  
   switch (state) {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
-      Serial.println("Turning");
       robot.turn();
-      delay(580);
+      delay(560);
       return;
     case gridEnum.Running:
-      //Serial.println("Running");
       robot.updateAndGoStraight();
       return;
     case gridEnum.Waiting:
-      robot.wait(time);
+      robot.wait();
       return;
     case gridEnum.ProcessingNextCommand: 
-      Serial.println("ProcessingNextCommand");
       if (defaultChoreo){
         robot.processNextDefaultCommand();
       }

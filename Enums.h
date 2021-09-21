@@ -1,7 +1,7 @@
 #ifndef Enums_h
 #define Enums_h
 
-// TODO: grid size as parameter
+// TODO:  grid size as parameter
 
 class Enums
 {
@@ -52,13 +52,11 @@ class Enums
 
     int getNextOrientation(Orientation orientation)
     {
-      //return static_cast<Orientation>((orientation + 1) % 4);
       return ((orientation + 1) % 4);
     }
 
     int getPreviousOrientation(Orientation orientation)
     {
-      //return static_cast<Orientation>((orientation + 4 - 1) % 4);
       return ((orientation + 4 - 1) % 4);
     }
 
@@ -71,24 +69,6 @@ class Enums
     {
       return static_cast<Position_X >((position_X + 5 - 1) % 5);
     }
-
-    bool isInTargetPosition(
-      Orientation orientation, Position_X x, int y, Position_X target_x, int target_y) {
-    switch (orientation) {
-        case North:
-            Serial.println("N");
-            return y == target_y;
-        case East:
-            Serial.println("E");
-            return x == target_x;
-        case South:
-            Serial.println("S");
-            return y == target_y;
-        case West:
-            Serial.println("W");
-            return x == target_x;
-      }
-   }
    
     Orientation chooseOrientation_x(Position_X x, Position_X target_x) 
     {
@@ -113,9 +93,9 @@ class Enums
       Orientation target_orientation) 
       {
         if (target_orientation == getNextOrientation(orientation))
-           return Left;
-        if (target_orientation == getPreviousOrientation(orientation))
            return Right;
+        if (target_orientation == getPreviousOrientation(orientation))
+           return Left;
         if (isInTheCorner(position_x, position_y))
            return chooseDirectionInTheCorner(position_x, position_y, orientation);
         return Right;

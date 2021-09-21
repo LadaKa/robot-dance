@@ -8,6 +8,22 @@ class Parser {
 
 public:
 
+  // TODO: debug
+  
+  /*
+   * A1N
+     E1
+     T150
+     B2
+     T350
+     3A
+     T450
+     4C
+     T567
+     D2
+     T700
+   * 
+   */
   Parser(){
   }
 

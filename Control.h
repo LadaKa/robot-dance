@@ -30,6 +30,7 @@ public:
   void setSpeed(int speed, int turnSpeed)
   {
     _speed = speed;
+    _turnSpeed = turnSpeed;
   }
 
   void move(Enums::Direction direction) {
@@ -64,23 +65,20 @@ private:
 
   void turnLeft()
   {
-    //Serial.println("TURNING LEFT");
-    _leftMotor.go(_speed/2 );
-    _rightMotor.go(-_speed/2 );
+    _leftMotor.go(_turnSpeed);
+    _rightMotor.go(-_turnSpeed);
   }
 
   void turnRight()
   {
-    ///Serial.println("TURNING Right");
-    _leftMotor.go(-_speed/2 );
-    _rightMotor.go(_speed/2 );
+    _leftMotor.go(-_turnSpeed);
+    _rightMotor.go(_turnSpeed);
   }
 
 
 private:
   int _speed;
-  int _turnPosSpeed;
-  int _turnNegSpeed;
+  int _turnSpeed;
   Motor _leftMotor, _rightMotor;
 
   Enums gridEnum;
