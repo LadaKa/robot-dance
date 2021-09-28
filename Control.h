@@ -1,4 +1,4 @@
-#ifndef Control_h
+ #ifndef Control_h
 #define Control_h
 
 #include "motor.h"
@@ -12,7 +12,7 @@ public:
 
   /*
    *   the pulse width [microsec]:
-   *   min_pulse ~   0-degree angle on the servo (defaults to  544)
+   *   min_pulse ~   0-degree angle on the servo (defaults to  544)     // !!!!!!!!!!!!!!!!!!!!!!!!!!!! not true
    *   max_pulse ~ 180-degree angle on the servo (defaults to 2400)
    *   
   */

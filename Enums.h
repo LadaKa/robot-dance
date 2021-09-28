@@ -56,10 +56,21 @@ class Enums
       J = 9  
 		} Position_X;
 
-    Position_X getPositionX_ByUpperChar(char ch){
+    Position_X getPositionX_ByUpperChar(char ch){ // upper not needed (toUpper)
       return (Position_X)(ch-'A');
     }
 
+    Orientation getOrientation_ByChar(char ch)
+    {
+      switch (toupper(ch))
+      {
+        case 'N': return North;
+        case 'E': return East;
+        case 'S': return South;
+        default: return West;  // handle error
+      }
+      
+    }
 
     char getPositionX_AsChar(Position_X x){
       return x+'A';
@@ -146,7 +157,8 @@ class Enums
 
     bool isOnBoundary(Position_X position_x, int position_y) {
 
-      return (position_x == 1 
+      return (
+        position_x == 1 
         || position_x == x_size
         || position_y == 1
         || position_y == y_size); 

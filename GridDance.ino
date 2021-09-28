@@ -31,8 +31,8 @@ int y_size;
 
 Enums::Position_X  start_position_x;
 int start_position_y;  
-
 Enums::Orientation start_orientation;
+
 Enums::Direction start_direction;
 Enums::State start_state;
 
@@ -80,7 +80,6 @@ void loop() {
       return;
     case gridEnum.Turning:
       robot.turn();
-      delay(560);
       return;
     case gridEnum.Running:
       robot.updateAndGoStraight();
@@ -109,10 +108,9 @@ void checkButton(Enums::State state){
         start();
         robot.setState(gridEnum.ProcessingNextCommand);
         return;
-      default:
-        //TODO: go to start position
-        //robot.setState(gridEnum.End);
-        robot.end();
+      default:  // what about End?
+        robot.goToStartPosition();
+        robot.setState(gridEnum.ProcessingNextCommand);
         return;
     }
   }
@@ -122,6 +120,11 @@ void start(){
   if (Serial.available()){
     defaultChoreo = false;
     parser.setSize(x_size, y_size);
+    parser.readStartPosition();
+    robot.setStartPosition(
+      parser.start_position_x,
+      parser.start_position_y,
+      parser.start_orientation);
   }
   else {
     robot.setDefaultChoreo();

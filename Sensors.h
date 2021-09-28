@@ -1,10 +1,6 @@
 #ifndef Sensors_h
 #define Sensors_h
 
-/*
-	TODO:	pin as parameters
-			update orientation separately
-*/
 class Sensors
 {
 	public:
@@ -35,19 +31,22 @@ class Sensors
     //printSensors();
 	}
 
-
+  bool getMiddle()
+  {
+    return MIDDLE;
+  }
 
 	bool getAnyOUTER()
 	{
 		return (L_OUTER || R_OUTER);
 	}
 
-	bool isOnEdge()
+	bool isOnEdge()   
 	{
-		return OUTER_State=Edge;
+		return OUTER_State=Edge;      // never used
 	}
 
-	bool updateMiddleSensorState()  
+	bool updateMiddleSensorState()  // never used
 	{
     Serial.println("MiddleSensorState");
     Serial.println(MIDDLE_State);

@@ -19,6 +19,10 @@ private:
   Enums::Position_X position_x;
   int position_y; 
 
+  Enums::Position_X  start_position_x;
+  int start_position_y;  
+  Enums::Orientation start_orientation;
+
   int target_time = 0;
   Enums::Orientation target_orientation;
   Enums::Position_X target_x;
@@ -47,8 +51,6 @@ public:
     control.setSpeed(speed, 100); // TODO: param or const
   }
 
-  
-
   void setPose(Enums::Position_X x, int y, Enums::Orientation o, Enums::Direction dir)
   {
     position_x = x;
@@ -72,6 +74,22 @@ public:
     return state;
   }
 
+  void setStartPosition(
+    Enums::Position_X  x,
+    int y,
+    Enums::Orientation orientation)
+    {
+      start_position_x = x;
+      start_position_y = y;
+      start_orientation = orientation;
+    }
+
+  void goToStartPosition()
+    {
+      commands.reset(Command(start_position_x, start_position_y, 0));
+      
+    }
+
 
   // state Running
   void updateAndGoStraight() {
@@ -93,25 +111,22 @@ public:
   // state Turning
   void turn()
   {
-    /* TODO: do in one step*/
     if (next_turning_steps == 0)      // start of turning
     {
-      next_turning_steps = turning_steps_count;
-      control.move(direction);
+      next_turning_steps = 1; // should be bool
     }
-    else                              // last turning step
+    else if (sensors.getMiddle())     // last turning step
     {
       updateOrientation();
       if (orientation == target_orientation)
       {
+        next_turning_steps = 0;
         direction = gridEnum.Forward;
         state = gridEnum.Running;
         return;
-      }
-      
-      next_turning_steps = turning_steps_count;
-      control.move(direction);
+      } 
     }
+    control.move(direction);
   }
 
 
@@ -170,7 +185,8 @@ public:
 
   // TODO:  move to some separate class 
   void setDefaultChoreo(){
-    
+    setStartPosition(
+      gridEnum.getPositionX_ByUpperChar('A'), 1, gridEnum.getOrientation_ByChar('N'));
     commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
     commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 0));
     commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));  
@@ -222,6 +238,7 @@ private:
       direction = gridEnum.chooseDirection(
         position_x, position_y, orientation, target_orientation);
       state = gridEnum.Turning;
+      next_turning_steps == 0; 
     }
   }
 

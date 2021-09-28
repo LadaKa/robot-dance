@@ -39,6 +39,13 @@ public:
     return command;
 	}
 
+  void reset(Command cmd)
+  {
+    int first = 0;
+    int last  = 0;
+    commandsArray[first] = cmd;
+  }
+
 private:
 	int first = 0;
 	int last = -1;

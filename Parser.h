@@ -27,13 +27,33 @@ public:
   Parser(){
   }
 
+  Enums gridEnum;
+  
+  Enums::Position_X  start_position_x;
+  int start_position_y;  
+  Enums::Orientation start_orientation;
+
   void setSize(int max_x, int max_y){
     maxX = max_x;
     maxY = max_y;
   }
-  
-  void readNextCommand(){
 
+  void readStartPosition()
+  {
+    inputAvailable = Serial.available(); // no need for check here
+    command = readCommandWithCoordinates();
+    if ( hasError )
+      return;
+    start_position_x = command.x;
+    start_position_y = command.y;
+    hasCommand = false;
+
+    char orientation = readNextNonWhitespace();
+    start_orientation = gridEnum.getOrientation_ByChar(orientation);  // here should be validation
+  }
+  
+  void readNextCommand()
+  {
     inputAvailable = Serial.available();
     command = readCommandWithCoordinates();
     if ( hasError )
@@ -68,7 +88,7 @@ private:
   Command command;
   bool hasCommand = false;
 
-  Enums gridEnum;
+
   
   Command readCommandWithCoordinates(){
     
