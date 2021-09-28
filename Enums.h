@@ -6,6 +6,16 @@
 class Enums
 {
 	public:
+
+    int x_size = 5; //default
+    int y_size = 5; 
+    
+    SetSize(int x, int y)
+    {
+      x_size = x;
+      y_size = y;
+    }
+    
 		typedef enum
 		{
       BeforeStart,
@@ -26,7 +36,7 @@ class Enums
 
 		typedef enum
 		{
-			North=0,
+			North = 0,
 			East,
 			South,
 			West
@@ -38,7 +48,12 @@ class Enums
 			B = 1, 
 			C = 2, 
 			D = 3, 
-			E = 4
+			E = 4,
+      F = 5,
+      G = 6,
+      H = 7,
+      I = 8,
+      J = 9  
 		} Position_X;
 
     Position_X getPositionX_ByUpperChar(char ch){
@@ -62,12 +77,12 @@ class Enums
 
     Position_X getNextPosition_X(Position_X position_X)
     {
-      return static_cast<Position_X>((position_X + 1) % 5);
+      return static_cast<Position_X>((position_X + 1) % x_size);
     }
 
     Position_X  getPreviousPosition_X (Position_X  position_X)
     {
-      return static_cast<Position_X >((position_X + 5 - 1) % 5);
+      return static_cast<Position_X >((position_X + x_size - 1) % x_size);
     }
    
     Orientation chooseOrientation_x(Position_X x, Position_X target_x) 
@@ -92,52 +107,49 @@ class Enums
       Orientation orientation, 
       Orientation target_orientation) 
       {
+        if (isOnBoundary(position_x, position_y))
+           return chooseDirectionOnBoundary(position_x, position_y, orientation);
+           
         if (target_orientation == getNextOrientation(orientation))
            return Right;
         if (target_orientation == getPreviousOrientation(orientation))
-           return Left;
-        if (isInTheCorner(position_x, position_y))
-           return chooseDirectionInTheCorner(position_x, position_y, orientation);
+           return Left;     
         return Right;
     }
 
-    //TODO: when the sensors are not used during rotation, the turning direction does not matter
-    Direction chooseDirectionInTheCorner(
+    Direction chooseDirectionOnBoundary(
       Position_X position_x, 
       int position_y,
       Orientation orientation) {
+        
         switch (orientation) {
           case North:
             if (position_x == 1)
                 return Right;
             break;
           case East:
-            if (position_y == 5)
+            if (position_y == y_size)
                 return Right;
             break;
           case South:
-            if (position_x == 5)
+            if (position_x == x_size)
                 return Right;
             break;
           case West:
             if (position_y == 1)
                 return Right;
             break;
-
       }
       return Left;
     }
 
-    bool isInTheCorner(Position_X position_x, int position_y) {
-      if (position_x == 1) {
-        if (position_y == 1 || position_y == 5)
-            return true;
-      }
-      else if (position_x == 5) {
-        if (position_y == 1 || position_y == 5)
-            return true;
-      }
-      return false;
+
+    bool isOnBoundary(Position_X position_x, int position_y) {
+
+      return (position_x == 1 
+        || position_x == x_size
+        || position_y == 1
+        || position_y == y_size); 
     }
 	private:
 	

@@ -24,10 +24,10 @@ Enums gridEnum;
 Button button;
 Parser parser;
 
+// TODO:  move start position to robot class
+
 int x_size;
 int y_size;
-
-// TODO:  move start position to robot class
 
 Enums::Position_X  start_position_x;
 int start_position_y;  
@@ -45,9 +45,10 @@ void setup() {
   Serial.begin(9600);
   
   Serial.println("Setup");
-
   x_size = 5;
   y_size = 5;
+  
+  gridEnum.SetSize(x_size, y_size);
   
   start_position_x = gridEnum.A;
   start_position_y = 1;
