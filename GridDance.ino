@@ -4,16 +4,14 @@
 #include "Button.h"
 #include "Parser.h"
 
-#define MIN_PULSE  544
-#define MAX_PULSE 2400
+#define MIN_PULSE  500
+#define MAX_PULSE 2500
 #define LEFT_PIN  13
 #define RIGHT_PIN 12
 #define BUTTON_PIN 2
 /*
  * TODO:  
  *        proper grid structure: enums -> class
- *        grid size as param
- *        start position as parsed param
  *        debug button press
  *        go to start position on button press
  */
@@ -42,25 +40,20 @@ bool defaultChoreo = true;
 void setup() {
 
   time = 0;
-  Serial.begin(9600);
+  Serial.begin(9600);  // some other number should be used
   
   Serial.println("Setup");
   x_size = 5;
   y_size = 5;
   
   gridEnum.SetSize(x_size, y_size);
-  
-  start_position_x = gridEnum.A;
-  start_position_y = 1;
-  start_orientation = gridEnum.North;
   start_direction = gridEnum.Forward;
 
   button.setPin(BUTTON_PIN);
 
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 80);   // speed = 80
-  robot.setPose(
-    start_position_x, start_position_y, start_orientation, start_direction);
+
   robot.setState(
     gridEnum.ProcessingNextCommand);
   // DEBUG button
@@ -69,7 +62,7 @@ void setup() {
 }
 
 void loop() {
-
+  
   time = millis();
   
   Enums::State state = robot.getState();
@@ -82,13 +75,14 @@ void loop() {
       robot.turn();
       return;
     case gridEnum.Running:
-      robot.updateAndGoStraight();
+      robot.goToNextCrossing();
       return;
     case gridEnum.Waiting:
       robot.wait();
       return;
     case gridEnum.ProcessingNextCommand: 
       if (defaultChoreo){
+        Serial.println(millis());
         robot.processNextDefaultCommand();
       }
       else {

@@ -38,16 +38,19 @@ class Sensors
 
 	bool getAnyOUTER()
 	{
+    readSensors();
 		return (L_OUTER || R_OUTER);
 	}
 
 	bool isOnEdge()   
 	{
+    readSensors();
 		return OUTER_State=Edge;      // never used
 	}
 
 	bool updateMiddleSensorState()  // never used
 	{
+    readSensors();
     Serial.println("MiddleSensorState");
     Serial.println(MIDDLE_State);
 		if (MIDDLE && !L_INNER && !R_INNER)
@@ -76,6 +79,7 @@ class Sensors
 
 	void updateOuterSensorState()
 	{
+    readSensors();
 		switch (OUTER_State) 
 		{
 			case White:
@@ -99,6 +103,7 @@ class Sensors
 
 	void printSensors()
   {
+    // readSensors();
     Serial.print(L_OUTER);
     Serial.print(L_INNER);
     Serial.print(MIDDLE);

@@ -14,7 +14,7 @@ public:
 
  void stop()
  {
-    writeMicroseconds(_centerPulse);
+    writeMicroseconds(_centerPulse); 
  }
 
 	void setCenterPulseAndDirection(int centerPulse, bool right) 

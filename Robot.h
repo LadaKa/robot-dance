@@ -8,6 +8,8 @@
 #include "Command.h"
 
 class Robot
+
+// sensor : states onEdge/white/black -no use?
 {
 private:
   Control control;
@@ -31,7 +33,6 @@ private:
   Enums::State state;
   int next_steps;  // TODO: boolean
   int next_turning_steps = 0;
-  int turning_steps_count = 2;
   Commands commands;
 
 
@@ -43,22 +44,16 @@ public:
   {
   };
 
+  /* methods for basic setting */
+  
   void setMotorsAndSpeed(
     int leftPin, int rightPin,
     int minPulse, int maxPulse,
     int speed){
     control.setMotors(leftPin, rightPin, minPulse, maxPulse);
-    control.setSpeed(speed, 100); // TODO: param or const
+    control.setSpeed(speed, 50); // TODO: param or const
   }
-
-  void setPose(Enums::Position_X x, int y, Enums::Orientation o, Enums::Direction dir)
-  {
-    position_x = x;
-    position_y = y;
-    orientation = o;
-    direction = dir;
-  }
-
+  
   void setState(Enums::State s) //!!
   {
     state = s;
@@ -74,14 +69,30 @@ public:
     return state;
   }
 
+  // TODO:  move to some separate class as static string
+  void setDefaultChoreo(){
+    
+    setStartPosition(
+      gridEnum.getPositionX_ByUpperChar('A'), 1, gridEnum.getOrientation_ByChar('N'));
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  // what if equals?
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 0));
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));  
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 2, 0));  
+  }
+
   void setStartPosition(
     Enums::Position_X  x,
     int y,
-    Enums::Orientation orientation)
+    Enums::Orientation o)
     {
       start_position_x = x;
       start_position_y = y;
       start_orientation = orientation;
+      position_x = x;
+      position_y = y;
+      orientation = o;
+      direction = gridEnum.Forward;
     }
 
   void goToStartPosition()
@@ -91,49 +102,61 @@ public:
     }
 
 
+  /* movement by state */
+
   // state Running
-  void updateAndGoStraight() {
-    sensors.readSensors();
-    if (next_steps > 0) {
-      goToCrossing();
+  void goToNextCrossing() {
+
+    while (!sensors.getAnyOUTER())
+    {
+      if (sensors.MIDDLE)
+      {
+        moveCloserToLine();
+      }
+      else 
+      {
+        control.move(direction);
+      }
     }
-    else if (sensors.getAnyOUTER()) {
-      updateStateBeforeCrossing();
-    }
-    else if (sensors.MIDDLE) {
-      moveCloserToLine();
-      return;
-    }
-    control.move(direction);
+    updatePosition();
+    checkPosition();
+    delay(300);
   }
-  
 
   // state Turning
   void turn()
   {
-    if (next_turning_steps == 0)      // start of turning
+    while (sensors.getMiddle())
     {
-      next_turning_steps = 1; // should be bool
+      control.move(direction);
     }
-    else if (sensors.getMiddle())     // last turning step
+    while (!sensors.getMiddle())
     {
-      updateOrientation();
-      if (orientation == target_orientation)
-      {
-        next_turning_steps = 0;
+      control.move(direction);
+    }
+    updateOrientation();
+    checkTargetOrientation();
+  }
+
+  void checkTargetOrientation()
+  {   
+    if (orientation == target_orientation)
+    {
         direction = gridEnum.Forward;
         state = gridEnum.Running;
-        return;
-      } 
-    }
-    control.move(direction);
+    } 
   }
+    
 
 
   // state Waiting
   void wait() {
     if ((millis()/1000) >= target_time){
       state = gridEnum.ProcessingNextCommand;
+    }
+    else 
+    {
+      control.stop();
     }
   }
 
@@ -165,52 +188,39 @@ public:
       state = Enums::Waiting;
       control.stop();
     }
-
-    // TODO:  move to Command class
-    if (cmd.orderedCoordinates){    // A1
-      if ( position_x != target_x)
-        target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
-      else 
-        target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
-    }
-    
-    else {                          // 1A
-      if ( position_y != target_y)
-        target_orientation = gridEnum.chooseOrientation_y(position_y, target_y);
-      else 
-        target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
-    }
+    target_orientation = getTargetOrientation(cmd.orderedCoordinates);
     setStateByOrientation();
   }
 
-  // TODO:  move to some separate class 
-  void setDefaultChoreo(){
-    setStartPosition(
-      gridEnum.getPositionX_ByUpperChar('A'), 1, gridEnum.getOrientation_ByChar('N'));
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 0));
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));  
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 4, 0));  
-  }
+   Enums::Orientation getTargetOrientation(bool orderedCoordinates)
+   {  
+    if (orderedCoordinates){    // A1
+      if ( position_x != target_x)
+        return gridEnum.chooseOrientation_x(position_x, target_x);
+      else 
+        return gridEnum.chooseOrientation_y(position_y, target_y);
+    }
+    
+    else {                      // 1A
+      if ( position_y != target_y)
+        return gridEnum.chooseOrientation_y(position_y, target_y);
+      else 
+        return gridEnum.chooseOrientation_x(position_x, target_x);
+    }
+   }
+
 
 
 private:
 
-  void goToCrossing() {
+  void checkPosition() {
     
-    next_steps = next_steps - 1;
-    control.move(direction);  //  ?
-    if (next_steps == 0)
-    {
-      printInfoAndPose("before crossing");
-      
-      sensors.setOuterSensorStateToWhite();
       if (target_x == position_x)       
       {
         if (target_y == position_y)
         {
           state = Enums::Waiting;
-          control.stop();
+          control.stop();  // will be stopped anyway
         }
         else
         {
@@ -219,11 +229,11 @@ private:
         }
       }
       else
-      {
+      { 
         target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
         setStateByOrientation();
       }
-    }
+    
   }
 
   void setStateByOrientation() {
@@ -242,15 +252,15 @@ private:
     }
   }
 
-  void updateStateBeforeCrossing() {
-    sensors.updateOuterSensorState();
+ /* void updateStateBeforeCrossing() {
+    sensors.updateOuterSensorState();  // any use?
     updatePosition();
-    next_steps = 1;
+    //next_steps = 1;
     delay(300);
-  }
+  }*/
 
   void moveCloserToLine() {
-    sensors.OUTER_State = sensors.White;
+    //sensors.OUTER_State = sensors.White;
     
     if (sensors.L_INNER && !sensors.R_INNER) {
       control.move(gridEnum.Left);
