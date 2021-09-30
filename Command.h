@@ -30,11 +30,18 @@ class Command
       orderedCoordinates = false;
    }
 
-   Command(Enums::Position_X position_x, int position_y, bool orderedCoords)
+   Command(Enums::Position_X position_x, int position_y, int t)
    {
       x = position_x;
       y = position_y;
-      orderedCoordinates = orderedCoords;
+      time = t;
+   }
+
+   Command(Enums::Position_X position_x, int position_y, bool orderedCoords) //what is this
+   {
+      x = position_x;
+      y = position_y;
+      orderedCoordinates = orderedCoords;  
    }
 
    void setTime(int t){

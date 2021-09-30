@@ -72,13 +72,12 @@ public:
   // TODO:  move to some separate class as static string
   void setDefaultChoreo(){
     
-    setStartPosition(
-      gridEnum.getPositionX_ByUpperChar('A'), 1, gridEnum.getOrientation_ByChar('N'));
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  // what if equals?
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 0));
+    setStartPosition(gridEnum.A, 1, gridEnum.North);
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 15));  
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 20));
    // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));  
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 2, 0));  
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 2, 0));  
   }
 
   void setStartPosition(
@@ -120,7 +119,8 @@ public:
     }
     updatePosition();
     checkPosition();
-    delay(300);
+    control.move(direction);
+    delay(200);
   }
 
   // state Turning
@@ -151,6 +151,7 @@ public:
 
   // state Waiting
   void wait() {
+    
     if ((millis()/1000) >= target_time){
       state = gridEnum.ProcessingNextCommand;
     }
@@ -252,12 +253,6 @@ private:
     }
   }
 
- /* void updateStateBeforeCrossing() {
-    sensors.updateOuterSensorState();  // any use?
-    updatePosition();
-    //next_steps = 1;
-    delay(300);
-  }*/
 
   void moveCloserToLine() {
     //sensors.OUTER_State = sensors.White;
