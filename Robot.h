@@ -9,7 +9,6 @@
 
 class Robot
 
-// sensor : states onEdge/white/black -no use?
 {
 private:
   Control control;
@@ -31,8 +30,6 @@ private:
   int target_y;
 
   Enums::State state;
-  int next_steps;  // TODO: boolean
-  int next_turning_steps = 0;
   Commands commands;
 
 
@@ -73,9 +70,10 @@ public:
   void setDefaultChoreo(){
     
     setStartPosition(gridEnum.A, 1, gridEnum.North);
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 15));  
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 20));
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 4, 0));  
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 15));  
+   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 20));
+   
+    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 1, 0));  
    // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
    // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 2, 0));  
   }
@@ -155,10 +153,6 @@ public:
     if ((millis()/1000) >= target_time){
       state = gridEnum.ProcessingNextCommand;
     }
-    else 
-    {
-      control.stop();
-    }
   }
 
   void end() {
@@ -191,6 +185,9 @@ public:
     }
     target_orientation = getTargetOrientation(cmd.orderedCoordinates);
     setStateByOrientation();
+    direction = gridEnum.chooseDirection(
+        position_x, position_y, orientation, target_orientation);
+
   }
 
    Enums::Orientation getTargetOrientation(bool orderedCoordinates)
@@ -221,7 +218,7 @@ private:
         if (target_y == position_y)
         {
           state = Enums::Waiting;
-          control.stop();  // will be stopped anyway
+          control.stop();  
         }
         else
         {
@@ -249,13 +246,11 @@ private:
       direction = gridEnum.chooseDirection(
         position_x, position_y, orientation, target_orientation);
       state = gridEnum.Turning;
-      next_turning_steps == 0; 
     }
   }
 
 
   void moveCloserToLine() {
-    //sensors.OUTER_State = sensors.White;
     
     if (sensors.L_INNER && !sensors.R_INNER) {
       control.move(gridEnum.Left);

@@ -22,7 +22,6 @@ Enums gridEnum;
 Button button;
 Parser parser;
 
-// TODO:  move start position to robot class
 
 int x_size;
 int y_size;

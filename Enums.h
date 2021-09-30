@@ -1,7 +1,6 @@
 #ifndef Enums_h
 #define Enums_h
 
-// TODO:  grid size as parameter
 
 class Enums
 {
@@ -135,19 +134,19 @@ class Enums
         
         switch (orientation) {
           case North:
-            if (position_x == 1)
+            if (position_x == 0)
                 return Right;
             break;
           case East:
-            if (position_y == y_size)
+            if (position_y == y_size - 1)
                 return Right;
             break;
           case South:
-            if (position_x == x_size)
+            if (position_x == x_size - 1)
                 return Right;
             break;
           case West:
-            if (position_y == 1)
+            if (position_y == 0)
                 return Right;
             break;
       }

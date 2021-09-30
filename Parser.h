@@ -8,7 +8,7 @@ class Parser {
 
 public:
 
-  // TODO: debug; is it supposed to be stream reader?
+  // TODO: read to end
   
   /*
    * A1N
