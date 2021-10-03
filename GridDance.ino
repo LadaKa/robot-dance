@@ -3,6 +3,7 @@
 #include "Robot.h"
 #include "Button.h"
 #include "Parser.h"
+#include "Choreography.h"
 
 #define MIN_PULSE  500
 #define MAX_PULSE 2500
@@ -21,7 +22,7 @@ Robot robot;
 Enums gridEnum;
 Button button;
 Parser parser;
-
+Choreography choreography;
 
 int x_size;
 int y_size;
@@ -102,20 +103,17 @@ void checkButton(Enums::State state){
 
 void start()
 {
-  // DEBUG button 
-  Serial.println("Waiting for input (5 sec):");
-  delay(5000); // DEBUG button 
-  
   String choreo;
   if (Serial.available()>0){
-    choreo= Serial.readString(); 
-    processInputCommands(choreo);
+    choreo = Serial.readString();
   }
   else {
-    robot.setDefaultChoreo();
+    choreo = choreography.getDefault();
   }
+  processInputCommands(choreo);
   Serial.println("Start");
 }
+
 
 void processInputCommands(String choreo)
 {
@@ -125,8 +123,8 @@ void processInputCommands(String choreo)
      parser.start_position_x,
      parser.start_position_y,
      parser.start_orientation);
-  Commands commands;
-  
+     
+  Commands commands; 
   while (!parser.endOfInput(choreo))
   {
      parser.readNextCommand(choreo);

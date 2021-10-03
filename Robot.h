@@ -66,18 +66,6 @@ public:
     return state;
   }
 
-  // TODO:  move to some separate class as static string
-  void setDefaultChoreo(){
-    
-    setStartPosition(gridEnum.A, 1, gridEnum.North);
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 15));  
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 3, 20));
-   
-    commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 1, 0));  
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('A'), 2, 0));  
-   // commands.addCommand(Command(gridEnum.getPositionX_ByUpperChar('B'), 2, 0));  
-  }
-
   void setStartPosition(
     Enums::Position_X  x,
     int y,
@@ -112,13 +100,13 @@ public:
       }
       else 
       {
-        control.move(direction);
+        control.move(gridEnum.Forward);
       }
     }
+    control.move(gridEnum.Forward);
+    delay(300);
     updatePosition();
     checkPosition();
-    control.move(direction);
-    delay(200);
   }
 
   // state Turning
@@ -132,6 +120,7 @@ public:
     {
       control.move(direction);
     }
+    delay(500);
     updateOrientation();
     checkTargetOrientation();
   }
@@ -160,8 +149,8 @@ public:
     state = gridEnum.End;
   }
 
-  // process next pre-set choreo command
-  void processNextDefaultCommand(){
+  // process next command or set state to End
+  void processNextCommandIfExists(){
     if (commands.hasNextCommand()) {   
         Command cmd = commands.getNextCommand();
         processNextCommand(cmd);
@@ -171,7 +160,6 @@ public:
       }
   };
 
-  // process next choreo command
   void processNextCommand(Command cmd)
   {
 
@@ -179,10 +167,6 @@ public:
     target_y = cmd.y;
     target_time = cmd.time;
 
-    if (( position_x == target_x) && ( position_y == target_y)){
-      state = Enums::Waiting;
-      control.stop();
-    }
     target_orientation = getTargetOrientation(cmd.orderedCoordinates);
     setStateByOrientation();
     direction = gridEnum.chooseDirection(
@@ -236,7 +220,7 @@ private:
 
   void setStateByOrientation() {
 
-    printInfoAndPose("setStateByOrientation");
+    //printInfoAndPose("setStateByOrientation");
     if (orientation == target_orientation)
     {
       state = gridEnum.Running;
