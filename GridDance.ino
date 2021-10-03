@@ -49,7 +49,7 @@ void setup() {
   button.setPin(BUTTON_PIN);
 
   robot.setMotorsAndSpeed(
-    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 80);   // speed = 80
+    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 50);   // speed = 80
 
   robot.setState(
     gridEnum.ProcessingNextCommand);
@@ -133,4 +133,5 @@ void processInputCommands(String choreo)
      else 
         break;
   }
+  robot.setCommands(commands);
 }

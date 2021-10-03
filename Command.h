@@ -37,15 +37,17 @@ class Command
       time = t;
    }
 
-   Command(Enums::Position_X position_x, int position_y, bool orderedCoords) //what is this
-   {
-      x = position_x;
-      y = position_y;
-      orderedCoordinates = orderedCoords;  
-   }
+  void printCommand()
+  {
+    Serial.print(x);
+    Serial.print(y);
+    Serial.print(":");
+    Serial.println(time);
+  }
 
    void setTime(int t){
     time = t;
+    printCommand();
    }
 };
 

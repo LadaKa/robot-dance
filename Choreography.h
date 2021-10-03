@@ -9,7 +9,7 @@ class Choreography
 
     String getDefault()
     { 
-      return defaultChoreography;
+      return defaultChoreography_2;
     }
 
 
@@ -17,6 +17,9 @@ class Choreography
 
     const String defaultChoreography = 
 "A1N E1 T150 B2 T350 3A T450 4C T567 D2 T700";
+
+const String defaultChoreography_2 = 
+"A1N A2 T100 B2 T350";
 };
 
 #endif

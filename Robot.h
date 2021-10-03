@@ -104,7 +104,7 @@ public:
       }
     }
     control.move(gridEnum.Forward);
-    delay(300);
+    delay(400);
     updatePosition();
     checkPosition();
   }
@@ -120,7 +120,7 @@ public:
     {
       control.move(direction);
     }
-    delay(500);
+    delay(100);
     updateOrientation();
     checkTargetOrientation();
   }
@@ -139,7 +139,7 @@ public:
   // state Waiting
   void wait() {
     
-    if ((millis()/1000) >= target_time){
+    if ((millis()/100) >= target_time){
       state = gridEnum.ProcessingNextCommand;
     }
   }
