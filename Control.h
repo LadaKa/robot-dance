@@ -49,6 +49,12 @@ public:
     }
   }
 
+  void moveBackwards() // correction movement
+  {
+    _leftMotor.go(-15);
+    _rightMotor.go(-25);
+  }
+
   void stop()
   {
     _leftMotor.stop();

@@ -48,7 +48,7 @@ public:
     int minPulse, int maxPulse,
     int speed){
     control.setMotors(leftPin, rightPin, minPulse, maxPulse);
-    control.setSpeed(speed, 50); // TODO: param or const
+    control.setSpeed(speed,30); // TODO: param or const
   }
   
   void setState(Enums::State s) //!!
@@ -94,13 +94,13 @@ public:
 
     while (!sensors.getAnyOUTER())
     {
-      if (sensors.MIDDLE)
+      if (sensors.getMiddle())
       {
-        moveCloserToLine();
+         followLine();
       }
       else 
       {
-        control.move(gridEnum.Forward);
+         control.moveBackwards();
       }
     }
     control.move(gridEnum.Forward);
@@ -195,6 +195,19 @@ public:
 
 private:
 
+  void followLine(){
+
+    if (sensors.L_INNER && !sensors.R_INNER) {
+      control.move(gridEnum.Left);
+    }
+    else if (!sensors.R_INNER && sensors.R_INNER) { 
+      control.move(gridEnum.Right);
+    }
+    else {
+      control.move(gridEnum.Forward);
+    }
+  }
+
   void checkPosition() {
     
       if (target_x == position_x)       
@@ -233,19 +246,6 @@ private:
     }
   }
 
-
-  void moveCloserToLine() {
-    
-    if (sensors.L_INNER && !sensors.R_INNER) {
-      control.move(gridEnum.Left);
-    }
-    else if (sensors.R_INNER) {
-      control.move(gridEnum.Right);
-    }
-    else {
-      control.move(gridEnum.Forward);
-    }
-  }
 
   void updatePosition() {
     switch (orientation) {
