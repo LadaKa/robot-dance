@@ -7,23 +7,17 @@
 class Parser {
 
 public:
-
-  // TODO: read to end
   
-  /*
-   * A1N
-     E1
-     T150
-     B2
-     T350
-     3A
-     T450
-     4C
-     T567
-     D2
-     T700
-   * 
-   */
+/*
+   
+A1N 
+E1 T150
+B2 T350 
+3A T450 
+4C T567
+D2 T700
+   
+*/
   Parser(){
   }
 
@@ -33,32 +27,39 @@ public:
   int start_position_y;  
   Enums::Orientation start_orientation;
 
-  void setSize(int max_x, int max_y){
+  bool endOfInput(String choreo)
+  {
+    return currentIndex >= choreo.length();
+  }
+  
+
+  void setSize(int max_x, int max_y)
+  {
     maxX = max_x;
     maxY = max_y;
   }
 
-  void readStartPosition()
+  void readStartPosition(String choreo)
   {
-    inputAvailable = Serial.available(); // no need for check here
-    command = readCommandWithCoordinates();
+    inputAvailable = true;
+    command = readCommandWithCoordinates(choreo);
     if ( hasError )
       return;
     start_position_x = command.x;
     start_position_y = command.y;
     hasCommand = false;
 
-    char orientation = readNextNonWhitespace();
+    char orientation = readNextNonWhitespace(choreo);
     start_orientation = gridEnum.getOrientation_ByChar(orientation);  // here should be validation
   }
   
-  void readNextCommand()
+  void readNextCommand(String choreo)
   {
-    inputAvailable = Serial.available();
-    command = readCommandWithCoordinates();
+    inputAvailable = currentIndex < choreo.length();
+    command = readCommandWithCoordinates(choreo);
     if ( hasError )
       return;
-    int time = readTimeExpression();
+    int time = readTimeExpression(choreo);
     if ( hasError )
       return;   
     command.setTime(time);
@@ -87,10 +88,11 @@ private:
   
   Command command;
   bool hasCommand = false;
-
+  
+  int currentIndex = 0;
 
   
-  Command readCommandWithCoordinates(){
+  Command readCommandWithCoordinates(String choreo){
     
     char firstCoord;   
     char secondCoord;
@@ -100,9 +102,9 @@ private:
       lastChar = 0;
     }
     else {
-      ch1 = toupper(readNextNonWhitespace());
+      ch1 = toupper(readNextNonWhitespace(choreo));
     }
-    char ch2 = toupper(readNextNonWhitespace());
+    char ch2 = toupper(readNextNonWhitespace(choreo));
     if ( !inputAvailable ){
       Serial.println("Missing coordinates.");
       hasError = true;
@@ -111,60 +113,68 @@ private:
     return createCommandWithCoordinates(ch1, ch2);
   }
 
-  char readNextNonWhitespace(){
+  char readNextNonWhitespace(String choreo){
     
     char ch = 32;
     while ((ch == 9) || (ch == 10) || (ch == 13) || (ch == 32)){
-      if (Serial.available())
-        ch = Serial.read();
-      else {
+      if (currentIndex < choreo.length())
+      {
+        ch = choreo.charAt(currentIndex);
+        currentIndex++;
+      }
+      else 
+      {
         inputAvailable = false;
         break;
       }   
     }
-    
     return ch;
   }
 
   // time without whitespaces: 't[0-9]+'
-  int readTimeExpression(){
+  int readTimeExpression(String choreo){
     
-    char t = readNextNonWhitespace();
+    char t = readNextNonWhitespace(choreo);
     if (tolower(t) != 't') {
       Serial.println("Missing time expression.");
       hasError = true;
       return -1;
     }
-    return readDigits();
+    return readDigits(choreo);
   }
 
-  int readDigits(){
+  int readDigits(String choreo){
     char digits[MAX_TIME_DIGITS];
     int index = 0;
     char d;
     // at least one digit needed
-    if (Serial.available()){
-        d = Serial.read();
+    if (currentIndex < choreo.length()){
+        d = choreo.charAt(currentIndex);
+        currentIndex++;
         if (!isdigit(d)){
           Serial.println("Missing time value.");
           hasError = true;
           return digits;
         }
-        digits[index] = d;
+        digits[index] = d; 
         index++;
     }
-    while (Serial.available()){
-      d = Serial.read();
+    while (currentIndex < choreo.length()){
+      d = choreo.charAt(currentIndex);
+      currentIndex++;
       if (isdigit(d)){
         digits[index] = d;
         index++;
       }
       else {
-        lastChar = d;
+        if (isalpha(d))
+        {
+          lastChar = d;
+        }       
         break;
       }   
     }
-    return atoi(digits);
+    return atoi(digits); 
   }
 
   Command createCommandWithCoordinates(char ch1, char ch2){

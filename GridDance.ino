@@ -33,9 +33,6 @@ Enums::Orientation start_orientation;
 Enums::Direction start_direction;
 Enums::State start_state;
 
-bool defaultChoreo = true;
-
-
 void setup() {
 
   time = 0;
@@ -58,6 +55,7 @@ void setup() {
   // DEBUG button
   // Serial.println("Before Start - waiting for button press."); 
   start(); // DEBUG button 
+  
 }
 
 void loop() {
@@ -66,7 +64,7 @@ void loop() {
   
   Enums::State state = robot.getState();
   //checkButton(state); //  DEBUG button
-  
+   
   switch (state) {
     case gridEnum.BeforeStart:
       return;
@@ -80,14 +78,7 @@ void loop() {
       robot.wait();
       return;
     case gridEnum.ProcessingNextCommand: 
-      if (defaultChoreo){
-        Serial.println(millis());
-        robot.processNextDefaultCommand();
-      }
-      else {
-        processNextSerialInputCommand(); 
-      }     
-      return;
+      robot.processNextCommandIfExists();
     case gridEnum.End:
       return;
   }
@@ -101,7 +92,7 @@ void checkButton(Enums::State state){
         start();
         robot.setState(gridEnum.ProcessingNextCommand);
         return;
-      default:  // what about End?
+      default:  
         robot.goToStartPosition();
         robot.setState(gridEnum.ProcessingNextCommand);
         return;
@@ -109,15 +100,16 @@ void checkButton(Enums::State state){
   }
 }
 
-void start(){
-  if (Serial.available()){
-    defaultChoreo = false;
-    parser.setSize(x_size, y_size);
-    parser.readStartPosition();
-    robot.setStartPosition(
-      parser.start_position_x,
-      parser.start_position_y,
-      parser.start_orientation);
+void start()
+{
+  // DEBUG button 
+  Serial.println("Waiting for input (5 sec):");
+  delay(5000); // DEBUG button 
+  
+  String choreo;
+  if (Serial.available()>0){
+    choreo= Serial.readString(); 
+    processInputCommands(choreo);
   }
   else {
     robot.setDefaultChoreo();
@@ -125,12 +117,22 @@ void start(){
   Serial.println("Start");
 }
 
-void processNextSerialInputCommand(){
-  parser.readNextCommand();
-  if (parser.hasNextCommand()){
-    robot.processNextCommand(parser.getNextCommand());
-  }
-  else {
-    robot.end();
+void processInputCommands(String choreo)
+{
+  parser.setSize(x_size, y_size);
+  parser.readStartPosition(choreo);
+  robot.setStartPosition(
+     parser.start_position_x,
+     parser.start_position_y,
+     parser.start_orientation);
+  Commands commands;
+  
+  while (!parser.endOfInput(choreo))
+  {
+     parser.readNextCommand(choreo);
+     if (parser.hasNextCommand())
+        commands.addCommand(parser.getNextCommand());
+     else 
+        break;
   }
 }
