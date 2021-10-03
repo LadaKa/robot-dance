@@ -45,7 +45,7 @@ class Sensors
 
   bool getAnyINNER()
   {
-    readSensors();
+    readSensors(); 
     return (L_INNER || MIDDLE || R_INNER);
   }
 

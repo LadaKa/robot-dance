@@ -10,12 +10,8 @@
 #define LEFT_PIN  13
 #define RIGHT_PIN 12
 #define BUTTON_PIN 2
-/*
- * TODO:  
- *        proper grid structure: enums -> class
- *        debug button press
- *        go to start position on button press
- */
+
+#define SPEED 50
 
 int time; 
 Robot robot;
@@ -49,27 +45,21 @@ void setup() {
   button.setPin(BUTTON_PIN);
 
   robot.setMotorsAndSpeed(
-    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, 50);   // speed = 80
+    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED);
 
-  robot.setState(
-    gridEnum.ProcessingNextCommand);
-  // DEBUG button
-  // Serial.println("Before Start - waiting for button press."); 
-  start(); // DEBUG button 
-  
+  robot.setState(gridEnum.BeforeStart);
+  Serial.println("Before Start - waiting for button press."); 
 }
 
 void loop() {
-  
-  time = millis();
-  
+
+  checkButton();
   Enums::State state = robot.getState();
-  //checkButton(state); //  DEBUG button
    
   switch (state) {
-    case gridEnum.BeforeStart:
+    case gridEnum.BeforeStart: 
       return;
-    case gridEnum.Turning:
+    case gridEnum.Turning: 
       robot.turn();
       return;
     case gridEnum.Running:
@@ -78,26 +68,29 @@ void loop() {
     case gridEnum.Waiting:
       robot.wait();
       return;
-    case gridEnum.ProcessingNextCommand: 
+    case gridEnum.ProcessingNextCommand:  
       robot.processNextCommandIfExists();
+      return;
     case gridEnum.End:
       return;
   }
 }
 
-void checkButton(Enums::State state){
-  if (button.isPressed()){
-    switch (state) {
+void checkButton(){     
+  
+  if (button.isPressed()){ 
+    switch (robot.getState()) {
       case gridEnum.BeforeStart:
-        Serial.println("Button pressed");
         start();
-        robot.setState(gridEnum.ProcessingNextCommand);
+        return;
+      case gridEnum.End:
+        start();
         return;
       default:  
         robot.goToStartPosition();
         robot.setState(gridEnum.ProcessingNextCommand);
-        return;
-    }
+        return;   
+    }  
   }
 }
 
@@ -111,7 +104,7 @@ void start()
     choreo = choreography.getDefault();
   }
   processInputCommands(choreo);
-  Serial.println("Start");
+  robot.setState(gridEnum.ProcessingNextCommand);
 }
 
 

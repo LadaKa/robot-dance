@@ -82,8 +82,7 @@ public:
 
   void goToStartPosition()
     {
-      commands.reset(Command(start_position_x, start_position_y, 0));
-      
+      commands.reset(Command(start_position_x, start_position_y, 0));     
     }
 
 
@@ -110,11 +109,11 @@ public:
   }
 
   // state Turning
-  void turn()
-  {
+  void turn() 
+  { 
     while (sensors.getMiddle())
     {
-      control.move(direction);
+      control.move(direction); 
     }
     while (!sensors.getMiddle())
     {

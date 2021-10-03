@@ -37,7 +37,7 @@ public:
   }
   
 private:
-  const int SHORT_PRESS_TIME = 500; // 500 milliseconds
+  const int SHORT_PRESS_TIME = 200; // milliseconds
   int pin;
   
   int lastState = HIGH;  

@@ -19,7 +19,7 @@ class Choreography
 "A1N E1 T150 B2 T350 3A T450 4C T567 D2 T700";
 
 const String defaultChoreography_2 = 
-"A1N B2 T150 B3 T350";/// 3A T450 4C T567 D2 T700";
+"A1N A2 T150 B2 T350";/// 3A T450 4C T567 D2 T700";
 };
 
 #endif
