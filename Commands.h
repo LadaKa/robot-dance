@@ -6,48 +6,42 @@
 
 class Commands
 {
-public:
-	Enums::Position_X x;
-	int y;
-	int time;
+  public:
+    Enums::Position_X x;
+    int y;
+    int time;
 
-	Command commandsArray[10];  
+    Command commandsArray[10];
 
-  Commands(){};
+    Commands() {};
 
-  Commands(int commandsCount)  //!!
-  {
-   // commandsTotalCount = commandsCount;
-  }
- 
-	void addCommand(Command command)
-	{   
-		commandsArray[last+1] = command;
-    last++;
-   
-	}
+    void addCommand(Command command)
+    {
+      commandsArray[last + 1] = command;
+      last++;
+    }
 
-	bool hasNextCommand()
-	{
-		return (last > -1 && first <= last);
-	}
+    bool hasNextCommand()
+    {
+      return (last > -1 && first <= last);
+    }
 
-	Command getNextCommand()
-	{
-		Command command = commandsArray[first];
-		first++;
-    return command;
-	}
+    Command getNextCommand()
+    {
+      Command command = commandsArray[first];
+      first++;
+      return command;
+    }
 
-  void reset(Command cmd)
-  {
+    void reset(Command cmd)
+    {
+      int first = 0;
+      int last  = 0;
+      commandsArray[first] = cmd;
+    }
+
+  private:
     int first = 0;
-    int last  = 0;
-    commandsArray[first] = cmd;
-  }
-
-private:
-	int first = 0;
-	int last = -1;
+    int last = -1;
 };
 #endif

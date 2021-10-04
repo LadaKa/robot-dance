@@ -14,7 +14,7 @@
 #define SPEED 50
 #define TURN_SPEED 30
 
-int time; 
+int time;
 Robot robot;
 Enums gridEnum;
 Button button;
@@ -25,7 +25,7 @@ int x_size;
 int y_size;
 
 Enums::Position_X  start_position_x;
-int start_position_y;  
+int start_position_y;
 Enums::Orientation start_orientation;
 
 Enums::Direction start_direction;
@@ -35,11 +35,10 @@ void setup() {
 
   time = 0;
   Serial.begin(9600);  // some other number should be used
-  
-  Serial.println("Setup");
+
   x_size = 5;
   y_size = 5;
-  
+
   gridEnum.SetSize(x_size, y_size);
   start_direction = gridEnum.Forward;
 
@@ -49,18 +48,18 @@ void setup() {
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
 
   robot.setState(gridEnum.BeforeStart);
-  Serial.println("Before Start - waiting for button press."); 
+  Serial.println("Before Start - waiting for button press.");
 }
 
 void loop() {
 
   checkButton();
   Enums::State state = robot.getState();
-   
+
   switch (state) {
-    case gridEnum.BeforeStart: 
+    case gridEnum.BeforeStart:
       return;
-    case gridEnum.Turning: 
+    case gridEnum.Turning:
       robot.turn();
       return;
     case gridEnum.Running:
@@ -69,7 +68,7 @@ void loop() {
     case gridEnum.Waiting:
       robot.wait();
       return;
-    case gridEnum.ProcessingNextCommand:  
+    case gridEnum.ProcessingNextCommand:
       robot.processNextCommandIfExists();
       return;
     case gridEnum.End:
@@ -77,9 +76,9 @@ void loop() {
   }
 }
 
-void checkButton(){     
-  
-  if (button.isPressed()){ 
+void checkButton() {
+
+  if (button.isPressed()) {
     switch (robot.getState()) {
       case gridEnum.BeforeStart:
         start();
@@ -87,18 +86,18 @@ void checkButton(){
       case gridEnum.End:
         start();
         return;
-      default:  
+      default:
         robot.goToStartPosition();
         robot.setState(gridEnum.ProcessingNextCommand);
-        return;   
-    }  
+        return;
+    }
   }
 }
 
 void start()
 {
   String choreo;
-  if (Serial.available()>0){
+  if (Serial.available() > 0) {
     choreo = Serial.readString();
   }
   else {
@@ -114,18 +113,22 @@ void processInputCommands(String choreo)
   parser.setSize(x_size, y_size);
   parser.readStartPosition(choreo);
   robot.setStartPosition(
-     parser.start_position_x,
-     parser.start_position_y,
-     parser.start_orientation);
-     
-  Commands commands; 
+    parser.start_position_x,
+    parser.start_position_y,
+    parser.start_orientation);
+
+  Commands commands;
   while (!parser.endOfInput(choreo))
   {
-     parser.readNextCommand(choreo);
-     if (parser.hasNextCommand())
-        commands.addCommand(parser.getNextCommand());
-     else 
-        break;
+    parser.readNextCommand(choreo);
+    if (parser.hasNextCommand()) {
+      commands.addCommand(parser.getNextCommand());
+    }
+    else {
+      parser.printParsedPart(choreo);
+      return;
+    }
+
   }
   robot.setCommands(commands);
 }

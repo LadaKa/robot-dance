@@ -7,48 +7,39 @@
 
 class Command
 {
-	public:
-  // TODO: private + getter
-		Enums::Position_X x;
-		int y;
-		int time = 0;
+  public:
+
+    Enums::Position_X x;
+    int y;
+    int time = 0;
     bool orderedCoordinates;
 
-    Command(){}
+    Command() {}
 
-		Command(Enums::Position_X position_x, int position_y)
-		{
+    Command(Enums::Position_X position_x, int position_y)
+    {
       x = position_x;
       y = position_y;
       orderedCoordinates = true;
-		}
+    }
 
-   Command(int position_y, Enums::Position_X position_x)
-   {
+    Command(int position_y, Enums::Position_X position_x)
+    {
       x = position_x;
       y = position_y;
       orderedCoordinates = false;
-   }
+    }
 
-   Command(Enums::Position_X position_x, int position_y, int t)
-   {
+    Command(Enums::Position_X position_x, int position_y, int t)
+    {
       x = position_x;
       y = position_y;
       time = t;
-   }
+    }
 
-  void printCommand()
-  {
-    Serial.print(x);
-    Serial.print(y);
-    Serial.print(":");
-    Serial.println(time);
-  }
-
-   void setTime(int t){
-    time = t;
-    printCommand();
-   }
+    void setTime(int t) {
+      time = t;
+    }
 };
 
 #endif
