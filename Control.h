@@ -34,25 +34,36 @@ public:
   }
 
   void move(Enums::Direction direction) {
+    lastDirection = direction;
     switch (direction) {
-    case gridEnum.Forward:
-      moveForward();
-      break;
-    case gridEnum.Left:
-      turnLeft();
-      break;
-    case gridEnum.Right:
-      turnRight();
-      break;
-    default:
-      break;
+      case gridEnum.Forward:
+        moveForward();
+        break;
+      case gridEnum.Left:
+        turnLeft();
+        break;
+      case gridEnum.Right:
+        turnRight();
+        break;
+      default:
+        break;
     }
   }
 
-  void moveBackwards() // correction movement
+  // correction movement
+  void moveInOppositeDirection() 
   {
-    _leftMotor.go(-15);
-    _rightMotor.go(-25);
+    switch (lastDirection) {
+      case gridEnum.Left:
+        move(gridEnum.Right);
+        break;
+      case gridEnum.Right:
+        move(gridEnum.Left);
+        break;
+      default:      
+        move(gridEnum.Left);
+        break;
+    }
   }
 
   void stop()
@@ -88,6 +99,7 @@ private:
   Motor _leftMotor, _rightMotor;
 
   Enums gridEnum;
+  Enums::Direction lastDirection = gridEnum.Forward;
 };
 
 #endif

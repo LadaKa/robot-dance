@@ -12,6 +12,7 @@
 #define BUTTON_PIN 2
 
 #define SPEED 50
+#define TURN_SPEED 30
 
 int time; 
 Robot robot;
@@ -45,7 +46,7 @@ void setup() {
   button.setPin(BUTTON_PIN);
 
   robot.setMotorsAndSpeed(
-    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED);
+    LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
 
   robot.setState(gridEnum.BeforeStart);
   Serial.println("Before Start - waiting for button press."); 

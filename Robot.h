@@ -46,12 +46,12 @@ public:
   void setMotorsAndSpeed(
     int leftPin, int rightPin,
     int minPulse, int maxPulse,
-    int speed){
+    int speed, int turn_speed){
     control.setMotors(leftPin, rightPin, minPulse, maxPulse);
-    control.setSpeed(speed,30); // TODO: param or const
+    control.setSpeed(speed, turn_speed); 
   }
   
-  void setState(Enums::State s) //!!
+  void setState(Enums::State s) 
   {
     state = s;
   }
@@ -99,7 +99,7 @@ public:
       }
       else 
       {
-         control.moveBackwards();
+         control.moveInOppositeDirection();
       }
     }
     control.move(gridEnum.Forward);
@@ -119,7 +119,7 @@ public:
     {
       control.move(direction);
     }
-    delay(100);
+    delay(200);
     updateOrientation();
     checkTargetOrientation();
   }
