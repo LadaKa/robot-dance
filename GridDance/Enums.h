@@ -120,10 +120,15 @@ class Enums
       if (isOnBoundary(position_x, position_y))
         return chooseDirectionOnBoundary(position_x, position_y, orientation);
 
-      if (target_orientation == getNextOrientation(orientation))
+      if (target_orientation == getNextOrientation(orientation)){
+        //Serial.println("Right");
         return Right;
-      if (target_orientation == getPreviousOrientation(orientation))
+      }
+      if (target_orientation == getPreviousOrientation(orientation)){
+        //Serial.println("Left");
         return Left;
+      }
+      //Serial.println("Right");
       return Right;
     }
 
@@ -155,9 +160,11 @@ class Enums
 
 
     bool isOnBoundary(Position_X position_x, int position_y) {
-
+      //Serial.println("isOnBoundary");
+      //Serial.println(position_x);
+      //Serial.println(position_y);
       return (
-               position_x == 1
+               position_x == A
                || position_x == x_size
                || position_y == 1
                || position_y == y_size);
