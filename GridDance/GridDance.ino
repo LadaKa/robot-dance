@@ -16,6 +16,7 @@
 
 int time;
 int lastButtonPressTime;
+bool goingBackToStart = false;
 Robot robot;
 Enums gridEnum;
 Button button;
@@ -57,6 +58,10 @@ void setup() {
 
 void loop() {
 
+  if (goingBackToStart){
+      robot.setState(gridEnum.GoingBackToStart);
+      goingBackToStart = false;
+  };
   Enums::State state = robot.getState();
 
   switch (state) {
@@ -74,7 +79,12 @@ void loop() {
       robot.wait();
       return;
     case gridEnum.ProcessingNextCommand:
+      Serial.println("ProcessingNextCommand");
       robot.processNextCommandIfExists();
+      return;
+    case gridEnum.GoingBackToStart:
+      Serial.println("GoingBackToStart");
+      robot.goToStartPosition();
       return;
     case gridEnum.End:
       return;
@@ -97,8 +107,7 @@ void onButtonPressed() {
       start();
       return;
     default:
-      Serial.println("goToStartPosition");
-      robot.goToStartPosition();
+      goingBackToStart = true;
       return;
   }
 }

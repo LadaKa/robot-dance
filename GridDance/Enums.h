@@ -22,6 +22,7 @@ class Enums
       Running,
       Waiting,
       ProcessingNextCommand,
+      GoingBackToStart,
       End
     } State;
 
@@ -134,9 +135,6 @@ class Enums
       int position_y,
       Orientation orientation) {
 
-      //Serial.print("isOnBoundary: ");
-      //Serial.print(getPositionX_AsChar(position_x));
-      //Serial.println(position_y);
       switch (orientation) {
         case North:
           if (position_x == A)

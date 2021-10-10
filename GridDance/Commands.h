@@ -35,8 +35,8 @@ class Commands
 
     void reset(Command cmd)
     {
-      int first = 0;
-      int last  = 0;
+      first = 0;
+      last  = 0;
       commandsArray[first] = cmd;
     }
 

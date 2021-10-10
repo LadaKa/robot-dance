@@ -156,6 +156,7 @@ class Robot
         processNextCommand(cmd);
       }
       else {
+        Serial.println("End");
         end();
       }
     };
@@ -194,6 +195,7 @@ class Robot
 
     void goToStartPosition()
     {
+      
       commands.reset(Command(start_position_x, start_position_y, 0));
       setState(gridEnum.ProcessingNextCommand);
     }
