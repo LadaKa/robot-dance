@@ -103,6 +103,7 @@ void onButtonPressed() {
 
 void start()
 {
+  Serial.println("Start.");
   String choreo;
   if (Serial.available() > 0) {
     choreo = Serial.readString();

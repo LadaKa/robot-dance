@@ -33,6 +33,12 @@ class Sensors
       return (L_OUTER || R_OUTER);
     }
 
+    bool getAnyINNER()
+    {
+      readSensors();
+      return (L_INNER || MIDDLE || R_INNER);
+    }
+
     int L_OUTER, L_INNER, MIDDLE, R_INNER, R_OUTER;
 
     void printSensors()

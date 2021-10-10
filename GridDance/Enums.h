@@ -117,7 +117,7 @@ class Enums
       Orientation orientation,
       Orientation target_orientation)
     {
-      if (isOnBoundary(position_x, position_y))
+      if (isOnBoundary(position_x, position_y, orientation))
         return chooseDirectionOnBoundary(position_x, position_y, orientation);
 
       if (target_orientation == getNextOrientation(orientation)){
@@ -137,13 +137,16 @@ class Enums
       int position_y,
       Orientation orientation) {
 
+      Serial.print("isOnBoundary: ");
+      Serial.print(getPositionX_AsChar(position_x));
+      Serial.println(position_y);
       switch (orientation) {
         case North:
-          if (position_x == 0)
+          if (position_x == A)
             return Right;
           break;
         case East:
-          if (position_y == y_size - 1)
+          if (position_y == y_size)
             return Right;
           break;
         case South:
@@ -151,7 +154,7 @@ class Enums
             return Right;
           break;
         case West:
-          if (position_y == 0)
+          if (position_y == 1)
             return Right;
           break;
       }
@@ -159,13 +162,20 @@ class Enums
     }
 
 
-    bool isOnBoundary(Position_X position_x, int position_y) {
-      //Serial.println("isOnBoundary");
-      //Serial.println(position_x);
-      //Serial.println(position_y);
+    bool isOnBoundary(Position_X position_x, int position_y, Orientation orientation) {
+
+      if (orientation == North || orientation == South){
+        return (position_x == A
+               || position_x == x_size - 1);
+      }
+      else {
+        return (position_y == 1
+               || position_y == y_size);
+      }
+      
       return (
                position_x == A
-               || position_x == x_size
+               || position_x == x_size - 1
                || position_y == 1
                || position_y == y_size);
     }
