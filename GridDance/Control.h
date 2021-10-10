@@ -46,11 +46,9 @@ class Control
       }
     }
 
-    // correction movement - doesn't work
+    // correction movement - doesn't work properly
     void moveInOppositeDirection()
     {
-      moveForward();
-      return;
     
       switch (lastDirection) {
         case gridEnum.Left:
@@ -60,7 +58,7 @@ class Control
           move(gridEnum.Left);
           break;
         default:
-          move(gridEnum.Forward);
+          move(gridEnum.Right);
           break;
       }
     }

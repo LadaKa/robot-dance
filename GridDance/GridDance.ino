@@ -88,6 +88,7 @@ void onButtonPressed() {
     return;
 
   lastButtonPressTime = currentTime;
+  Serial.println("Button pressed.");
   switch (robot.getState()) {
     case gridEnum.BeforeStart:
       start();
@@ -96,6 +97,7 @@ void onButtonPressed() {
       start();
       return;
     default:
+      Serial.println("goToStartPosition");
       robot.goToStartPosition();
       return;
   }

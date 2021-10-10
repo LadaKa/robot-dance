@@ -121,14 +121,11 @@ class Enums
         return chooseDirectionOnBoundary(position_x, position_y, orientation);
 
       if (target_orientation == getNextOrientation(orientation)){
-        //Serial.println("Right");
         return Right;
       }
       if (target_orientation == getPreviousOrientation(orientation)){
-        //Serial.println("Left");
         return Left;
       }
-      //Serial.println("Right");
       return Right;
     }
 
@@ -137,9 +134,9 @@ class Enums
       int position_y,
       Orientation orientation) {
 
-      Serial.print("isOnBoundary: ");
-      Serial.print(getPositionX_AsChar(position_x));
-      Serial.println(position_y);
+      //Serial.print("isOnBoundary: ");
+      //Serial.print(getPositionX_AsChar(position_x));
+      //Serial.println(position_y);
       switch (orientation) {
         case North:
           if (position_x == A)

@@ -204,13 +204,14 @@ class Robot
 
     // called only if at least one of inner sensors is seeing the line
     void followLine() {  
+      
       if (sensors.getMiddle()) {                   
         control.move(gridEnum.Forward);  
       }
       else if (!sensors.L_INNER && sensors.R_INNER) { 
         control.move(gridEnum.Left);
       }
-      else if ( sensors.R_INNER && !sensors.L_INNER) {
+      else if ( sensors.R_INNER && !sensors.L_INNER){
         control.move(gridEnum.Right);
       }
     }
