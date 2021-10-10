@@ -15,11 +15,13 @@
 #define TURN_SPEED 30
 
 int time;
+int lastButtonPressTime;
 Robot robot;
 Enums gridEnum;
 Button button;
 Parser parser;
 Choreography choreography;
+
 
 int x_size;
 int y_size;
@@ -43,6 +45,8 @@ void setup() {
   start_direction = gridEnum.Forward;
 
   button.setPin(BUTTON_PIN);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
+  lastButtonPressTime = 0;
 
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
@@ -53,16 +57,17 @@ void setup() {
 
 void loop() {
 
-  checkButton();
   Enums::State state = robot.getState();
 
   switch (state) {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
+      // Serial.println("Turning");
       robot.turn();
       return;
     case gridEnum.Running:
+      // Serial.println("Running");
       robot.goToNextCrossing();
       return;
     case gridEnum.Waiting:
@@ -76,21 +81,23 @@ void loop() {
   }
 }
 
-void checkButton() {
+void onButtonPressed() {
 
-  if (button.isPressed()) {
-    switch (robot.getState()) {
-      case gridEnum.BeforeStart:
-        start();
-        return;
-      case gridEnum.End:
-        start();
-        return;
-      default:
-        robot.goToStartPosition();
-        robot.setState(gridEnum.ProcessingNextCommand);
-        return;
-    }
+  int currentTime = millis();
+  if ((currentTime - lastButtonPressTime) < 1000)
+    return;
+
+  lastButtonPressTime = currentTime;
+  switch (robot.getState()) {
+    case gridEnum.BeforeStart:
+      start();
+      return;
+    case gridEnum.End:
+      start();
+      return;
+    default:
+      robot.goToStartPosition();
+      return;
   }
 }
 
