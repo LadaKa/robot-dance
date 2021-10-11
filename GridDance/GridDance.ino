@@ -13,45 +13,45 @@
 #define SPEED 50
 #define TURN_SPEED 30
 
-int time;
-int lastButtonPressTime;
-bool goingBackToStart = false;
 Robot robot;
 Enums gridEnum;
 Parser parser;
 Choreography choreography;
 
-
 int x_size;
 int y_size;
-
-Enums::Position_X  start_position_x;
-int start_position_y;
-Enums::Orientation start_orientation;
 
 Enums::Direction start_direction;
 Enums::State start_state;
 
+int lastButtonPressTime;
+bool goingBackToStart = false;
+
+
 void setup() {
 
-  time = 0;
-  Serial.begin(9600);  // some other number should be used
+  Serial.begin(9600);         // TODO: use some other number 
 
+  //  grid properties setup
   x_size = 5;
   y_size = 5;
-
   gridEnum.SetSize(x_size, y_size);
-  start_direction = gridEnum.Forward;
 
+  //  button setup
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
   lastButtonPressTime = 0;
 
+  //  robot setup
+  start_direction = gridEnum.Forward;
+  
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
 
   robot.setState(gridEnum.BeforeStart);
+  
   Serial.println("Before Start - waiting for button press.");
 }
+
 
 void loop() {
 
@@ -59,6 +59,7 @@ void loop() {
       robot.setState(gridEnum.GoingBackToStart);
       goingBackToStart = false;
   };
+
   Enums::State state = robot.getState();
 
   switch (state) {
@@ -84,44 +85,24 @@ void loop() {
   }
 }
 
-void onButtonPressed() {
-
-  int currentTime = millis();
-  if ((currentTime - lastButtonPressTime) < 1000)
-    return;
-
-  lastButtonPressTime = currentTime;
-  Serial.println("Button pressed.");
-  switch (robot.getState()) {
-    case gridEnum.BeforeStart:
-      start();
-      return;
-    case gridEnum.End:
-      start();
-      return;
-    default:
-      goingBackToStart = true;
-      return;
-  }
-}
-
+// input processing and setup of robot's commands
 void start()
 {
   Serial.println("Start.");
   String choreo;
   if (Serial.available() > 0) {
-    choreo = Serial.readString();
+    choreo = Serial.readString();         // user input from console 
   }
   else {
-    choreo = choreography.getDefault();
+    choreo = choreography.getDefault();   // pre-set choreography
   }
   processInputCommands(choreo);
   robot.setState(gridEnum.ProcessingNextCommand);
 }
 
-
+// input processing
 void processInputCommands(String choreo)
-{
+{ 
   parser.setSize(x_size, y_size);
   parser.readStartPosition(choreo);
   robot.setStartPosition(
@@ -140,7 +121,30 @@ void processInputCommands(String choreo)
       parser.printParsedPart(choreo);
       return;
     }
-
   }
   robot.setCommands(commands);
+}
+
+
+// button press handler (using interrupt)
+void onButtonPressed() {
+
+  int currentTime = millis();
+  if ((currentTime - lastButtonPressTime) < 1000)
+    return;
+
+  lastButtonPressTime = currentTime;
+  Serial.println("Button pressed.");
+  
+  switch (robot.getState()) {
+    case gridEnum.BeforeStart:
+      start();
+      return;
+    case gridEnum.End:
+      start();
+      return;
+    default:
+      goingBackToStart = true;
+      return;
+  }
 }

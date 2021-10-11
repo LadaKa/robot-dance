@@ -83,6 +83,7 @@ class Robot
     }
 
 
+
     /* movement by state */
 
     // state Running
@@ -145,6 +146,7 @@ class Robot
     void end() {
       control.stop();
       state = gridEnum.End;
+      Serial.println("End");
     }
 
 
@@ -156,7 +158,6 @@ class Robot
         processNextCommand(cmd);
       }
       else {
-        Serial.println("End");
         end();
       }
     };

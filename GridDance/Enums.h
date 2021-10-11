@@ -2,6 +2,7 @@
 #define Enums_h
 
 /* Enums for description of position, direction, orientation and state */
+
 class Enums
 {
   public:

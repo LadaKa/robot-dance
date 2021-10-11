@@ -50,7 +50,7 @@ class Parser {
       hasCommand = false;
 
       char orientation = readNextNonWhitespace(choreo);
-      start_orientation = gridEnum.getOrientation_ByChar(orientation);  // TODO: validation here
+      start_orientation = gridEnum.getOrientation_ByChar(orientation); 
     }
 
     void readNextCommand(String choreo)       // E1 T150
