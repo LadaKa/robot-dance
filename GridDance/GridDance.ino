@@ -1,7 +1,6 @@
 #include <Servo.h>
 #include "Enums.h"
 #include "Robot.h"
-#include "Button.h"
 #include "Parser.h"
 #include "Choreography.h"
 
@@ -19,7 +18,6 @@ int lastButtonPressTime;
 bool goingBackToStart = false;
 Robot robot;
 Enums gridEnum;
-Button button;
 Parser parser;
 Choreography choreography;
 
@@ -45,7 +43,6 @@ void setup() {
   gridEnum.SetSize(x_size, y_size);
   start_direction = gridEnum.Forward;
 
-  button.setPin(BUTTON_PIN);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
   lastButtonPressTime = 0;
 
@@ -68,22 +65,18 @@ void loop() {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
-      // Serial.println("Turning");
       robot.turn();
       return;
     case gridEnum.Running:
-      // Serial.println("Running");
       robot.goToNextCrossing();
       return;
     case gridEnum.Waiting:
       robot.wait();
       return;
     case gridEnum.ProcessingNextCommand:
-      Serial.println("ProcessingNextCommand");
       robot.processNextCommandIfExists();
       return;
     case gridEnum.GoingBackToStart:
-      Serial.println("GoingBackToStart");
       robot.goToStartPosition();
       return;
     case gridEnum.End:
