@@ -30,6 +30,9 @@ int lastButtonPressTime;
 bool goingBackToStart = false;
 
 
+//  debugged: turning and moving forward (speed ~ 200)
+//  TODO:     correction while following line   - change rotation to pivot turning
+
 void setup() {
 
   Serial.begin(9600);         // TODO: use some other number 
@@ -46,15 +49,13 @@ void setup() {
   lastButtonPressTime = 0;
 
   //  robot setup
-  start_direction = gridEnum.Right;
   
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
 
   robot.setState(gridEnum.BeforeStart);
   
- // Serial.println("Before Start - waiting for button press.");
-  start();
+  Serial.println("Before Start - waiting for button press.");
 }
 
 
