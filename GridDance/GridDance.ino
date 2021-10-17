@@ -10,6 +10,8 @@
 #define RIGHT_PIN 12
 #define BUTTON_PIN 2
 
+#define LED 11
+
 #define SPEED 50
 #define TURN_SPEED 30
 
@@ -39,22 +41,25 @@ void setup() {
 
   //  button setup
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
+  pinMode(LED,OUTPUT);
+  
   lastButtonPressTime = 0;
 
   //  robot setup
-  start_direction = gridEnum.Forward;
+  start_direction = gridEnum.Right;
   
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
 
   robot.setState(gridEnum.BeforeStart);
   
-  Serial.println("Before Start - waiting for button press.");
+ // Serial.println("Before Start - waiting for button press.");
+  start();
 }
 
 
 void loop() {
-
+  
   if (goingBackToStart){
       robot.setState(gridEnum.GoingBackToStart);
       goingBackToStart = false;
@@ -66,8 +71,9 @@ void loop() {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
-      robot.turn();
-      return;
+      robot.test_turn(); return; 
+      //robot.turn();
+      //return;
     case gridEnum.Running:
       robot.goToNextCrossing();
       return;
@@ -88,6 +94,10 @@ void loop() {
 // input processing and setup of robot's commands
 void start()
 {
+  robot.setState(gridEnum.Turning);
+  Serial.println("Start.");
+  return;
+  
   Serial.println("Start.");
   String choreo;
   if (Serial.available() > 0) {
@@ -98,6 +108,7 @@ void start()
   }
   processInputCommands(choreo);
   robot.setState(gridEnum.ProcessingNextCommand);
+  
 }
 
 // input processing
@@ -128,13 +139,13 @@ void processInputCommands(String choreo)
 
 // button press handler (using interrupt)
 void onButtonPressed() {
-
   int currentTime = millis();
   if ((currentTime - lastButtonPressTime) < 1000)
     return;
 
   lastButtonPressTime = currentTime;
   Serial.println("Button pressed.");
+
   
   switch (robot.getState()) {
     case gridEnum.BeforeStart:

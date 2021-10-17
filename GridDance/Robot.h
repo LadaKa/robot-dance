@@ -7,6 +7,7 @@
 #include "Commands.h"
 #include "Command.h"
 
+#define LED 11
 /* Robot moving on the grid by given choreography */
 class Robot
 
@@ -106,19 +107,30 @@ class Robot
       checkPosition();
     }
 
+  // test
+    void test_turn()
+    { 
+      direction = gridEnum.Right; //
+      control.move(direction);
+      while (sensors.getMiddle()) {}  
+      while (!sensors.getMiddle()) {}
+      delay(50);
+      control.stop();
+      digitalWrite(LED, HIGH);
+      delay(1000);
+      digitalWrite(LED, LOW);
+
+    }
+
 
     // state Turning
     void turn()
-    {
-      while (sensors.getMiddle())
-      {
-        control.move(direction);
-      }
-      while (!sensors.getMiddle())
-      {
-        control.move(direction);
-      }
-      delay(200);
+    { 
+      control.move(direction);
+      while (sensors.getMiddle()) {}  
+      while (!sensors.getMiddle()) {}
+      delay(50);
+      control.stop();
       updateOrientation();
       checkTargetOrientation();
     }
