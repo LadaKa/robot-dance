@@ -102,26 +102,14 @@ class Robot
         }
       }
       control.move(gridEnum.Forward);
-      delay(400);
+      delay(250);
+      control.stop();
+      digitalWrite(LED, HIGH);
+      delay(200);
+      digitalWrite(LED, LOW);
       updatePosition();
       checkPosition();
     }
-
-  // test
-    void test_turn()
-    { 
-      direction = gridEnum.Right; //
-      control.move(direction);
-      while (sensors.getMiddle()) {}  
-      while (!sensors.getMiddle()) {}
-      delay(50);
-      control.stop();
-      digitalWrite(LED, HIGH);
-      delay(1000);
-      digitalWrite(LED, LOW);
-
-    }
-
 
     // state Turning
     void turn()

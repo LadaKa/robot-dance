@@ -12,7 +12,7 @@
 
 #define LED 11
 
-#define SPEED 50
+#define SPEED 200
 #define TURN_SPEED 30
 
 Robot robot;
@@ -71,9 +71,8 @@ void loop() {
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
-      robot.test_turn(); return; 
-      //robot.turn();
-      //return;
+      robot.turn();
+      return;
     case gridEnum.Running:
       robot.goToNextCrossing();
       return;
@@ -94,10 +93,7 @@ void loop() {
 // input processing and setup of robot's commands
 void start()
 {
-  robot.setState(gridEnum.Turning);
-  Serial.println("Start.");
-  return;
-  
+
   Serial.println("Start.");
   String choreo;
   if (Serial.available() > 0) {
