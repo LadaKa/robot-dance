@@ -18,6 +18,7 @@ class Enums
 
     typedef enum
     {
+      Testing,
       BeforeStart,
       Turning,
       Running,

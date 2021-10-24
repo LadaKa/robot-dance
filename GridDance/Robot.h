@@ -87,6 +87,12 @@ class Robot
 
     /* movement by state */
 
+    // state Testing
+    void test(){
+      control.moveInOppositeDirection();
+    }
+    
+
     // state Running
     void goToNextCrossing() {
 

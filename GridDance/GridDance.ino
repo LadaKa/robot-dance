@@ -72,6 +72,8 @@ void loop() {
   Enums::State state = robot.getState();
 
   switch (state) {
+    case gridEnum.Testing:
+      robot.test();
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
@@ -107,8 +109,8 @@ void start()
     choreo = choreography.getDefault();   // pre-set choreography
   }
   processInputCommands(choreo);
-  robot.setState(gridEnum.ProcessingNextCommand);
-  
+ // robot.setState(gridEnum.ProcessingNextCommand);
+  robot.setState(gridEnum.Testing);
 }
 
 // input processing
