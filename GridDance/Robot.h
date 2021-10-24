@@ -114,7 +114,7 @@ class Robot
     // state Turning
     void turn()
     { 
-      control.move(direction);
+      control.rotate(direction);
       while (sensors.getMiddle()) {}  
       while (!sensors.getMiddle()) {}
       delay(50);

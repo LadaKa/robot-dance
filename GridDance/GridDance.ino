@@ -31,7 +31,10 @@ bool goingBackToStart = false;
 
 
 //  debugged: turning and moving forward (speed ~ 200)
+
 //  TODO:     correction while following line   - change rotation to pivot turning
+//            rename wheels (L/R) !!!
+
 
 void setup() {
 
