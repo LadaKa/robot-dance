@@ -12,7 +12,7 @@ class Choreography
 
   private:
 
-    const String defaultChoreography =  "A1N A2 T10 A5 T350"; 
+    const String defaultChoreography =  "A1N E1 T100 A5 T350"; 
           
    
 };

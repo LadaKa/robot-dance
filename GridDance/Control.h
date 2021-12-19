@@ -23,12 +23,12 @@ class Control
       _rightMotor.setCenterPulseAndDirection(centerPulse, true);
     }
 
-    void setSpeed(int speed, int turnSpeed)
+    void setSpeed(int speedParam, int turnSpeed)
     {
-      _speed = speed;
-      _rotationSpeed = turnSpeed;
-      _insideTurnSpeed = turnSpeed/2;
-      _outsideTurnSpeed = turnSpeed;
+      speed = speedParam;
+      rotationSpeed = turnSpeed;
+      insideTurnSpeed = turnSpeed/2;
+      outsideTurnSpeed = turnSpeed;
     }
 
     void move(Enums::Direction direction) {
@@ -77,6 +77,7 @@ class Control
           move(gridEnum.Right);
           break;
       }
+      delay(150);
     }
 
     void stop()
@@ -89,40 +90,40 @@ class Control
 
     void moveForward()
     {
-      _leftMotor.go(_speed);
-      _rightMotor.go(_speed);
+      _leftMotor.go(speed);
+      _rightMotor.go(speed);
     }
 
     void turnLeft()
     {
-      _leftMotor.go(_outsideTurnSpeed);
-      _rightMotor.go(_insideTurnSpeed);
+      _leftMotor.go(insideTurnSpeed);
+      _rightMotor.go(outsideTurnSpeed);
     }
-
+    
     void turnRight()
     {
-      _leftMotor.go(_insideTurnSpeed);
-      _rightMotor.go(_outsideTurnSpeed);
+      _leftMotor.go(outsideTurnSpeed);
+      _rightMotor.go(insideTurnSpeed);
     }
-
+    
     void rotateLeft()
     {
-      _leftMotor.go(_rotationSpeed);
-      _rightMotor.go(-_rotationSpeed);
+      _leftMotor.go( -rotationSpeed);
+      _rightMotor.go( rotationSpeed);
     }
 
     void rotateRight()
     {
-      _leftMotor.go(-_rotationSpeed);
-      _rightMotor.go(_rotationSpeed);
+      _leftMotor.go(  rotationSpeed);
+      _rightMotor.go(-rotationSpeed);
     }
 
 
   
-    int _speed;
-    int _rotationSpeed;         
-    int _insideTurnSpeed;
-    int _outsideTurnSpeed;
+    int speed;
+    int rotationSpeed;         
+    int insideTurnSpeed;
+    int outsideTurnSpeed;
     Motor _leftMotor, _rightMotor;
 
     Enums gridEnum;

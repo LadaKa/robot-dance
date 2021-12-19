@@ -29,9 +29,9 @@ class Motor : public Servo
     {
       _centerPulse = centerPulse;
       if (right)
-        _dir = 1;
-      else
         _dir = -1;
+      else
+        _dir = 1;
     }
 
   private:

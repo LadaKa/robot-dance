@@ -6,8 +6,8 @@
 
 #define MIN_PULSE  500
 #define MAX_PULSE 2500
-#define LEFT_PIN  13
-#define RIGHT_PIN 12
+#define LEFT_PIN  12
+#define RIGHT_PIN 13
 #define BUTTON_PIN 2
 
 #define LED 11
@@ -56,9 +56,11 @@ void setup() {
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
 
-  robot.setState(gridEnum.BeforeStart);
-  
-  Serial.println("Before Start - waiting for button press.");
+ // robot.setState(gridEnum.BeforeStart);
+ // Serial.println("Before Start - waiting for button press.");
+
+ robot.setState(gridEnum.Testing);
+ Serial.println("TESTING.");
 }
 
 
@@ -96,10 +98,10 @@ void loop() {
   }
 }
 
+
 // input processing and setup of robot's commands
 void start()
 {
-
   Serial.println("Start.");
   String choreo;
   if (Serial.available() > 0) {
@@ -109,9 +111,10 @@ void start()
     choreo = choreography.getDefault();   // pre-set choreography
   }
   processInputCommands(choreo);
- // robot.setState(gridEnum.ProcessingNextCommand);
-  robot.setState(gridEnum.Testing);
+  robot.setState(gridEnum.ProcessingNextCommand);
+ // robot.setState(gridEnum.Testing);
 }
+
 
 // input processing
 void processInputCommands(String choreo)
@@ -144,11 +147,8 @@ void onButtonPressed() {
   int currentTime = millis();
   if ((currentTime - lastButtonPressTime) < 1000)
     return;
-
   lastButtonPressTime = currentTime;
   Serial.println("Button pressed.");
-
-  
   switch (robot.getState()) {
     case gridEnum.BeforeStart:
       start();

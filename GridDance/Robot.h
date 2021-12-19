@@ -89,7 +89,10 @@ class Robot
 
     // state Testing
     void test(){
-      control.moveInOppositeDirection();
+       
+      // control.stop();  ok 
+     
+       control.move(gridEnum.Forward);  // only left
     }
     
 
@@ -110,9 +113,7 @@ class Robot
       control.move(gridEnum.Forward);
       delay(250);
       control.stop();
-      digitalWrite(LED, HIGH);
-      delay(200);
-      digitalWrite(LED, LOW);
+      flash();
       updatePosition();
       checkPosition();
     }
@@ -125,8 +126,10 @@ class Robot
       while (!sensors.getMiddle()) {}
       delay(50);
       control.stop();
+      flash();
       updateOrientation();
       checkTargetOrientation();
+      
     }
 
     void checkTargetOrientation()
@@ -313,6 +316,12 @@ class Robot
       Serial.print(orient + " ");
     }
 
+    void flash(){
+      digitalWrite(LED, HIGH);
+      delay(200);
+      digitalWrite(LED, LOW);
+    }
+    
 
 };
 
