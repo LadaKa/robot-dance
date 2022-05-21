@@ -1,7 +1,7 @@
 #ifndef Control_h
 #define Control_h
 
-#include "motor.h"
+#include "Motor.h"
 
 /* Control of robot left and right motors */
 

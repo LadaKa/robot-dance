@@ -3,6 +3,7 @@
 #include "Robot.h"
 #include "Parser.h"
 #include "Choreography.h"
+#include "Tests.h"
 
 #define MIN_PULSE  500
 #define MAX_PULSE 2500
@@ -19,6 +20,7 @@ Robot robot;
 Enums gridEnum;
 Parser parser;
 Choreography choreography;
+Tests tests;
 
 int x_size;
 int y_size;
@@ -46,7 +48,10 @@ void setup() {
   gridEnum.SetSize(x_size, y_size);
 
   //  button setup
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
+
+  //  led setup
   pinMode(LED,OUTPUT);
   
   lastButtonPressTime = 0;
@@ -65,17 +70,21 @@ void setup() {
 
 
 void loop() {
-  
+
+  /*
+   *  TODO: add this after button and movement tests will be done
+   * 
   if (goingBackToStart){
       robot.setState(gridEnum.GoingBackToStart);
       goingBackToStart = false;
   };
+  */
 
   Enums::State state = robot.getState();
 
   switch (state) {
     case gridEnum.Testing:
-      robot.test();
+      return;
     case gridEnum.BeforeStart:
       return;
     case gridEnum.Turning:
@@ -147,14 +156,17 @@ void onButtonPressed() {
   int currentTime = millis();
   if ((currentTime - lastButtonPressTime) < 1000)
     return;
+    
   lastButtonPressTime = currentTime;
-  Serial.println("Button pressed.");
   switch (robot.getState()) {
     case gridEnum.BeforeStart:
       start();
       return;
     case gridEnum.End:
       start();
+      return;
+    case gridEnum.Testing:
+      tests.testButton();
       return;
     default:
       goingBackToStart = true;
