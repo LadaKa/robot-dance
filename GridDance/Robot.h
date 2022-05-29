@@ -92,7 +92,7 @@ class Robot
        
       // control.stop();  ok 
      
-       control.move(gridEnum.Forward);  // only left
+      // control.move(gridEnum.Forward);  // only left
     }
     
 
@@ -210,7 +210,12 @@ class Robot
       setState(gridEnum.ProcessingNextCommand);
     }
 
-
+    void flash(){
+      digitalWrite(LED, HIGH);
+      delay(200);
+      digitalWrite(LED, LOW);
+    }
+    
 
   private:
 
@@ -315,13 +320,6 @@ class Robot
       Serial.print(orient);
       Serial.print(orient + " ");
     }
-
-    void flash(){
-      digitalWrite(LED, HIGH);
-      delay(200);
-      digitalWrite(LED, LOW);
-    }
-    
 
 };
 

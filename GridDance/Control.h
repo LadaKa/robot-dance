@@ -1,7 +1,7 @@
 #ifndef Control_h
 #define Control_h
 
-#include "motor.h"
+#include "Motor.h"
 
 /* Control of robot left and right motors */
 
@@ -15,6 +15,7 @@ class Control
     void setMotors(int leftPin, int rightPin, int minPulse, int maxPulse)
     {
       int centerPulse = (minPulse + maxPulse) / 2;
+      Serial.println(centerPulse);
 
       _leftMotor.attach(leftPin, minPulse, maxPulse);
       _leftMotor.setCenterPulseAndDirection(centerPulse, false);
