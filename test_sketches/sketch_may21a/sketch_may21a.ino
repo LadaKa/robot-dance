@@ -29,7 +29,7 @@ void setup() {
 
 // opakujici se smyčka
 void loop() {
-  if (buttonPressed)
+  if (true)//buttonPressed)
   {
     buttonPressed = false;
     digitalWrite(LED, HIGH); //zapnutí led

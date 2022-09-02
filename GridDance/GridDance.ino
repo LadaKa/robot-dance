@@ -13,8 +13,8 @@
 
 #define LED 11
 
-#define SPEED 200
-#define TURN_SPEED 30
+#define SPEED 200//300
+#define TURN_SPEED 40
 
 Robot robot;
 Enums gridEnum;
@@ -68,17 +68,14 @@ void setup() {
 
 void loop() {
 
-  /*
-      TODO: add this after button and movement tests will be done
-
-    if (goingBackToStart){
+  if (goingBackToStart){
       robot.setState(gridEnum.GoingBackToStart);
       goingBackToStart = false;
-    };
-  */
+      Serial.println("Go back!");
+  };
 
   Enums::State state = robot.getState();
-
+  
   switch (state) {
     case gridEnum.Testing:
       return;
@@ -94,9 +91,13 @@ void loop() {
       robot.wait();
       return;
     case gridEnum.ProcessingNextCommand:
+    
+      Serial.println("ProcessingNextCommand");
+      
       robot.processNextCommandIfExists();
       return;
     case gridEnum.GoingBackToStart:
+      Serial.println("GoingBackToStart");
       robot.goToStartPosition();
       return;
     case gridEnum.End:
@@ -106,7 +107,7 @@ void loop() {
 
 
 // input processing and setup of robot's commands
-void start()
+void start(int current_time)
 {
   Serial.println("Start.");
   String choreo;
@@ -117,7 +118,10 @@ void start()
     choreo = choreography.getDefault();   // pre-set choreography
   }
   processInputCommands(choreo);
+  robot.setStartTime(current_time);
   robot.setState(gridEnum.ProcessingNextCommand);
+  
+  goingBackToStart = false;
 }
 
 
@@ -149,19 +153,17 @@ void processInputCommands(String choreo)
 
 // button press handler (using interrupt)
 void onButtonPressed() {
+  
   int currentTime = millis();
-  if ((currentTime - lastButtonPressTime) < 500)
+  if ((currentTime - lastButtonPressTime) < 1000)
     return;
 
   robot.flash();
-
   lastButtonPressTime = currentTime;
+  
   switch (robot.getState()) {
     case gridEnum.BeforeStart:
-      start();
-      return;
-    case gridEnum.End:
-      start();
+      start(currentTime);
       return;
     case gridEnum.Testing:
       tests.testButton();

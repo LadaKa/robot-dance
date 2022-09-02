@@ -22,6 +22,8 @@ class Control
 
       _rightMotor.attach(rightPin, minPulse, maxPulse);
       _rightMotor.setCenterPulseAndDirection(centerPulse, true);
+
+      stop();
     }
 
     void setSpeed(int speedParam, int turnSpeed)
@@ -63,11 +65,10 @@ class Control
       }
     }
 
-    // correction movement - doesn't work properly
-    void moveInOppositeDirection()
+    void moveInOppositeDirection(Enums::Direction last_inner_sensor_side)
     {
     
-      switch (lastDirection) {
+      /*switch (lastDirection) {
         case gridEnum.Left:
           move(gridEnum.Right);
           break;
@@ -75,10 +76,15 @@ class Control
           move(gridEnum.Left);
           break;
         default:
-          move(gridEnum.Right);
+          move(last_inner_sensor_side);
           break;
       }
       delay(150);
+      */
+      move(last_inner_sensor_side);
+      //delay(50);
+      //stop();
+      //delay(5000);
     }
 
     void stop()

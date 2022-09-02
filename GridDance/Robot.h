@@ -26,6 +26,7 @@ class Robot
     int start_position_y;
     Enums::Orientation start_orientation;
 
+    int start_time = 0; // time of button press
     int target_time = 0;
     Enums::Orientation target_orientation;
     Enums::Position_X target_x;
@@ -33,6 +34,8 @@ class Robot
 
     Enums::State state;
     Commands commands;
+
+    bool goingBackToStart = false;
 
 
   public:
@@ -57,6 +60,11 @@ class Robot
     void setState(Enums::State s)
     {
       state = s;
+    }
+
+    void setStartTime(int start_t)
+    {
+      start_time = start_t;
     }
 
     void setCommands(Commands cmds)
@@ -94,6 +102,10 @@ class Robot
      
       // control.move(gridEnum.Forward);  // only left
     }
+
+    void stop(){
+      control.stop();
+    };
     
 
     // state Running
@@ -101,21 +113,48 @@ class Robot
 
       while (!sensors.getAnyOUTER())
       {
-        if (sensors.getAnyINNER())
+        //if (sensors.getAnyINNER())
+        if (sensors.getMiddle())
         {
-          followLine();
+          //followLine();
+          control.move(gridEnum.Forward); 
         }
         else
         {
-          control.moveInOppositeDirection();
+          Enums::Direction last_inner_sensor_side;
+          if (sensors.getLeftINNER()){
+            last_inner_sensor_side = gridEnum.Left;
+            //Serial.println("left");
+          }
+          else {
+            last_inner_sensor_side = gridEnum.Right;
+            //Serial.println("rigth");
+          }
+          
+          while (!sensors.getMiddle() && !sensors.getAnyOUTER()){
+            control.moveInOppositeDirection(last_inner_sensor_side);
+            if (sensors.getLeftINNER()){
+              last_inner_sensor_side = gridEnum.Left;
+              //Serial.println("left");
+            }
+            else {
+              last_inner_sensor_side = gridEnum.Right;
+            //Serial.println("rigth");
+            }
+            //control.stop();
+            //delay(50000);
+          }
+          
         }
       }
       control.move(gridEnum.Forward);
-      delay(250);
-      control.stop();
+      delay(100);//250);
       flash();
+      
       updatePosition();
       checkPosition();
+     // if (state == gridEnum.Turning)
+        control.stop();
     }
 
     // state Turning
@@ -123,9 +162,13 @@ class Robot
     { 
       control.rotate(direction);
       while (sensors.getMiddle()) {}  
+      delay(400);
+      //control.stop();
+      //delay(9900);
       while (!sensors.getMiddle()) {}
-      delay(50);
+      delay(100);
       control.stop();
+      //delay(9900);
       flash();
       updateOrientation();
       checkTargetOrientation();
@@ -134,6 +177,8 @@ class Robot
 
     void checkTargetOrientation()
     {
+      Serial.println(orientation);
+      Serial.println(target_orientation);
       if (orientation == target_orientation)
       {
         direction = gridEnum.Forward;
@@ -145,7 +190,7 @@ class Robot
     // state Waiting
     void wait() {
 
-      if ((millis() / 100) >= target_time) {
+      if (((millis() - start_time)/ 100) >= target_time) {
         state = gridEnum.ProcessingNextCommand;
       }
     }
@@ -165,6 +210,10 @@ class Robot
       if (commands.hasNextCommand()) {
         Command cmd = commands.getNextCommand();
         processNextCommand(cmd);
+      }
+      else if (goingBackToStart) {
+        rotateToStartOrientation();
+        goingBackToStart = false;
       }
       else {
         end();
@@ -202,10 +251,24 @@ class Robot
       }
     }
 
+    void rotateToStartOrientation(){
+      target_orientation = start_orientation;
+      direction = gridEnum.chooseDirection(
+                  position_x, position_y, orientation, target_orientation);
+      while (orientation != start_orientation){
+        turn();
+      }
+      
+      direction = gridEnum.Forward;
+      state = gridEnum.BeforeStart;
+      
+      control.stop();
+      
+    }
 
     void goToStartPosition()
     {
-      
+      goingBackToStart = true;
       commands.reset(Command(start_position_x, start_position_y, 0));
       setState(gridEnum.ProcessingNextCommand);
     }

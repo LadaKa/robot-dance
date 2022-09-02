@@ -27,11 +27,15 @@ class Motor : public Servo
 
     void setCenterPulseAndDirection(int centerPulse, bool right)
     {
-      _centerPulse = centerPulse;
       if (right)
+      {
         _dir = -1;
+        _centerPulse = centerPulse;
+        
+      }
       else
         _dir = 1;
+        _centerPulse = centerPulse;
     }
 
   private:

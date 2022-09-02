@@ -23,6 +23,10 @@ class Commands
 
     bool hasNextCommand()
     {
+      //Serial.println("Has: ");
+      //Serial.println(last);
+     // Serial.println(first);
+     // Serial.println(last > -1 && first <= last);
       return (last > -1 && first <= last);
     }
 
