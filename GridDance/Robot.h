@@ -36,6 +36,7 @@ class Robot
     Enums::State state;
     Commands commands;
 
+    bool hasInputChoreography = false;
     bool goingBackToStart = false;
 
 
@@ -71,6 +72,7 @@ class Robot
     void setCommands(Commands cmds)
     {
       commands = cmds;
+      hasInputChoreography = true;
     }
 
     void setStartPosition(
@@ -80,7 +82,8 @@ class Robot
     {
       start_position_x = x;
       start_position_y = y;
-      start_orientation = orientation;
+      start_orientation = o;
+      
       position_x = x;
       position_y = y;
       orientation = o;
@@ -92,6 +95,10 @@ class Robot
       return state;
     }
 
+
+    bool hasChoreography(){
+      return hasInputChoreography;
+    }
 
 
     /* movement by state */
@@ -185,7 +192,7 @@ class Robot
       }
       else if (goingBackToStart) {
         rotateToStartOrientation();
-        goingBackToStart = false;
+        resetAfterReturn();
       }
       else {
         end();
@@ -227,15 +234,21 @@ class Robot
       target_orientation = start_orientation;
       direction = gridEnum.chooseDirection(
                   position_x, position_y, orientation, target_orientation);
+      printInfoAndPose("go back");
+      Serial.println(start_orientation);
       while (orientation != start_orientation){
         turn();
       }
       
+      control.stop();
+    }
+
+    void resetAfterReturn(){
+      goingBackToStart = false;
+      hasInputChoreography = false;
+      commands.reset();
       direction = gridEnum.Forward;
       state = gridEnum.BeforeStart;
-      
-      control.stop();
-      
     }
 
     void goToStartPosition()

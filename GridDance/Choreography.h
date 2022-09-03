@@ -5,9 +5,19 @@ class Choreography
 {
   public:
 
-    String getDefault()
+    Choreography()
     {
-      return defaultChoreography;
+      value = defaultValue;
+    }
+
+    String getValue()
+    {
+      return value;
+    }
+
+    void setValue(String choreographyValue)
+    {
+      value = choreographyValue;
     }
 
   private:
@@ -21,11 +31,12 @@ class Choreography
    *      "A1N E1 T150 B2 T350 3A T450 4C T567 D2 T700"
    *      
    *  3.  Short track for return tests (different start position):
-   *      "..
+   *      "A3S B1 T100" 
    *  
    */
-  
-   const String defaultChoreography =  "A1N E1 T150 B2 T350 3A T450 4C T567 D2 T700";
+
+   String value;
+   const String defaultValue = "A3S B1 T100"; // "A1N E1 T150 B2 T350 3A T450 4C T567 D2 T700";
 };
 
 #endif

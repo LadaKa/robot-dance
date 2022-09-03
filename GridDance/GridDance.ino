@@ -24,8 +24,8 @@
 
 Robot robot;
 Enums gridEnum;
-Parser parser;
 Choreography choreography;
+
 
 int x_size;
 int y_size;
@@ -74,6 +74,9 @@ void loop() {
   switch (state) {
     
     case gridEnum.BeforeStart:
+      if (Serial.available() > 0) {
+        processChoreographyFromSerial();
+      }
       return;
       
     case gridEnum.Turning:
@@ -105,15 +108,12 @@ void loop() {
 // input processing and setup of robot's commands
 void start(int current_time)
 {
-  String choreo;
-  if (Serial.available() > 0) {
-    choreo = Serial.readString();         // user input from console
-    Serial.println("Processing choreography from console.");
+  if (!robot.hasChoreography()){
+    if (!tryProcessCommands(choreography.getValue())){
+      Serial.println("Invalid default choreography.");
+      return;
+    }
   }
-  else {
-    choreo = choreography.getDefault();   // pre-set choreography
-  }
-  processInputCommands(choreo);
   
   robot.setStartTime(current_time);
   robot.setState(gridEnum.ProcessingNextCommand);
@@ -121,29 +121,48 @@ void start(int current_time)
 }
 
 
-// input processing
-void processInputCommands(String choreo)
+// processing of choreography string 
+bool tryProcessCommands(String choreo)
 {
-  parser.setSize(x_size, y_size);
-  parser.readStartPosition(choreo);
+  Parser* parser = new Parser();
+  parser->setSize(x_size, y_size);
+  parser->readStartPosition(choreo);
   robot.setStartPosition(
-    parser.start_position_x,
-    parser.start_position_y,
-    parser.start_orientation);
+    parser->start_position_x,
+    parser->start_position_y,
+    parser->start_orientation);
 
   Commands commands;
-  while (!parser.endOfInput(choreo))
+  while (!parser->endOfInput(choreo) && !parser->hasAnyError())
   {
-    parser.readNextCommand(choreo);
-    if (parser.hasNextCommand()) {
-      commands.addCommand(parser.getNextCommand());
-    }
-    else {
-      parser.printParsedPart(choreo);
-      return;
+    parser->readNextCommand(choreo);
+    if (parser->hasNextCommand()) {
+      commands.addCommand(parser->getNextCommand());
     }
   }
+
+  if (parser->hasAnyError())
+    return false;
+    
   robot.setCommands(commands);
+  return true;
+}
+
+void processChoreographyFromSerial()
+{
+  String inputValue = Serial.readString();
+  Serial.println("Parsing choreography:");
+  Serial.println(inputValue);
+  
+  if (tryProcessCommands(inputValue)){
+    choreography.setValue(inputValue);
+    Serial.println("New choreography has been set.");
+  }
+  else {
+    Serial.println("Invalid choreography.");
+  }
+  
+  Serial.println("\n*****");
 }
 
 

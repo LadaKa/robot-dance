@@ -38,6 +38,12 @@ class Commands
       return command;
     }
 
+    void reset()
+    {
+      first = 0;
+      last  = 0;
+    }
+  
     void reset(Command cmd)
     {
       first = 0;

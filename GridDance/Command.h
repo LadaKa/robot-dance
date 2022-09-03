@@ -41,6 +41,7 @@ class Command
     void setTime(int t) {
       time = t;
     }
+
 };
 
 #endif

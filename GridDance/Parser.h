@@ -51,6 +51,7 @@ class Parser {
 
       char orientation = readNextNonWhitespace(choreo);
       start_orientation = gridEnum.getOrientation_ByChar(orientation); 
+      printStartPosition(command, orientation);
     }
 
     void readNextCommand(String choreo)       // E1 T150
@@ -63,6 +64,9 @@ class Parser {
       if ( hasError )
         return;
       command.setTime(time);
+      // DEBUG
+      printCommand(command);
+      
       hasCommand = true;
     }
 
@@ -73,6 +77,10 @@ class Parser {
     Command getNextCommand() {
       hasCommand = false;
       return command;
+    }
+
+    bool hasAnyError() {
+      return hasError;
     }
 
     void printParsedPart(String choreo) {
@@ -110,7 +118,6 @@ class Parser {
       }
       char ch2 = toupper(readNextNonWhitespace(choreo));
       if ( !inputAvailable ) {
-        Serial.println("Missing coordinates.");
         hasError = true;
         return;
       }
@@ -120,7 +127,8 @@ class Parser {
     char readNextNonWhitespace(String choreo) {
 
       char ch = 32;
-      while ((ch == 9) || (ch == 10) || (ch == 13) || (ch == 32)) {
+      while ((ch == 9) || (ch == 10) || (ch == 13) || (ch == 32)
+      || (ch == 44) || (ch == 59)) {
         if (currentIndex < choreo.length())
         {
           ch = choreo.charAt(currentIndex);
@@ -140,7 +148,6 @@ class Parser {
 
       char t = readNextNonWhitespace(choreo);
       if (tolower(t) != 't') {
-        Serial.println("Missing time expression.");
         hasError = true;
         return -1;
       }
@@ -156,7 +163,6 @@ class Parser {
         d = choreo.charAt(currentIndex);
         currentIndex++;
         if (!isdigit(d)) {
-          Serial.println("Missing time value.");
           hasError = true;
           return digits;
         }
@@ -199,7 +205,6 @@ class Parser {
         result = Command(position_y, position_x);
       }
       else {
-        Serial.println("Invalid coordinates.");
         hasError = true;
         return;
       }
@@ -215,15 +220,39 @@ class Parser {
     bool checkCoordinates(Enums::Position_X position_x, int position_y) {
       bool valid = true;
       char x = gridEnum.getPositionX_AsChar(position_x);
-      if ((x - 'A') > maxX) {
+      if ((x - 'A') > maxX - 1) {
         valid = false;
-        Serial.println("X-coordinate exceeds max value.");
+        Serial.println("Coordinate exceeds max value:");
+        Serial.println(x);
       }
-      if (position_y > maxY) {
+      else if (position_y > maxY) {
         valid = false;
-        Serial.println("Y-coordinate exceeds max value.");
+        Serial.println("Coordinate exceeds max value:");
+        Serial.println(position_y);
       }
       return valid;
+    }
+
+    void printStartPosition(
+        Command command,
+        char orientation){
+        
+      Serial.print(gridEnum.getPositionX_AsChar(command.x));
+      Serial.print(command.y);
+      Serial.println(orientation);
+    }
+
+    void printCommand(Command command){
+      if (command.orderedCoordinates){
+        Serial.print(gridEnum.getPositionX_AsChar(command.x));
+        Serial.print(command.y);
+      }
+      else {
+        Serial.print(command.y);
+        Serial.print(gridEnum.getPositionX_AsChar(command.x));
+      }
+      Serial.print(" T");
+      Serial.println(command.time);
     }
 };
 
