@@ -2,10 +2,11 @@
 #define Motor_h
 
 /*
+     Servo Motor:
+     
      the pulse width [microsec]:
      min_pulse ~   0-degree angle on the servo (defaults to  500)
      max_pulse ~ 180-degree angle on the servo (defaults to 2500)
-
 */
 
 class Motor : public Servo

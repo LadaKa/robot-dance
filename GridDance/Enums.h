@@ -7,6 +7,7 @@ class Enums
 {
   public:
 
+    // grid size
     int x_size = 5;
     int y_size = 5;
 
@@ -16,6 +17,7 @@ class Enums
       y_size = y;
     }
 
+    // states of robot
     typedef enum
     {
       Testing,
@@ -28,6 +30,7 @@ class Enums
       End
     } State;
 
+    // Direction
     typedef enum
     {
       Forward,
@@ -36,6 +39,7 @@ class Enums
       Backward
     } Direction;
 
+    // Orientation
     typedef enum
     {
       North = 0,
@@ -44,6 +48,7 @@ class Enums
       West
     } Orientation;
 
+    // Position X
     typedef enum
     {
       A = 0,
@@ -58,7 +63,10 @@ class Enums
       J = 9
     } Position_X;
 
-    Position_X getPositionX_ByUpperChar(char ch) { // toUpper can be used here
+
+    // Utils for grid enums
+
+    Position_X getPositionX_ByUpperChar(char ch) { 
       return (Position_X)(ch - 'A');
     }
 
@@ -69,7 +77,7 @@ class Enums
         case 'N': return North;
         case 'E': return East;
         case 'S': return South;
-        default: return West;  // handle error
+        default: return West;  
       }
 
     }

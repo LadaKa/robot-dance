@@ -8,6 +8,7 @@
 #include "Command.h"
 
 #define LED 11
+
 /* Robot moving on the grid by given choreography */
 class Robot
 
@@ -95,66 +96,44 @@ class Robot
 
     /* movement by state */
 
-    // state Testing
-    void test(){
-       
-      // control.stop();  ok 
-     
-      // control.move(gridEnum.Forward);  // only left
-    }
-
-    void stop(){
-      control.stop();
-    };
-    
-
     // state Running
     void goToNextCrossing() {
 
       while (!sensors.getAnyOUTER())
       {
-        //if (sensors.getAnyINNER())
         if (sensors.getMiddle())
         {
-          //followLine();
           control.move(gridEnum.Forward); 
         }
         else
         {
           Enums::Direction last_inner_sensor_side;
-          if (sensors.getLeftINNER()){
+          if (sensors.getLeftINNERValue()){
             last_inner_sensor_side = gridEnum.Left;
-            //Serial.println("left");
           }
           else {
             last_inner_sensor_side = gridEnum.Right;
-            //Serial.println("rigth");
           }
           
           while (!sensors.getMiddle() && !sensors.getAnyOUTER()){
             control.moveInOppositeDirection(last_inner_sensor_side);
-            if (sensors.getLeftINNER()){
+            if (sensors.getLeftINNERValue()){
               last_inner_sensor_side = gridEnum.Left;
-              //Serial.println("left");
             }
             else {
               last_inner_sensor_side = gridEnum.Right;
-            //Serial.println("rigth");
             }
-            //control.stop();
-            //delay(50000);
-          }
-          
+          }    
         }
       }
       control.move(gridEnum.Forward);
-      delay(100);//250);
+      delay(100);
       flash();
       
       updatePosition();
       checkPosition();
-     // if (state == gridEnum.Turning)
-        control.stop();
+      
+      control.stop();
     }
 
     // state Turning
@@ -163,22 +142,17 @@ class Robot
       control.rotate(direction);
       while (sensors.getMiddle()) {}  
       delay(400);
-      //control.stop();
-      //delay(9900);
       while (!sensors.getMiddle()) {}
       delay(100);
       control.stop();
-      //delay(9900);
+      
       flash();
       updateOrientation();
       checkTargetOrientation();
-      
     }
 
     void checkTargetOrientation()
     {
-      Serial.println(orientation);
-      Serial.println(target_orientation);
       if (orientation == target_orientation)
       {
         direction = gridEnum.Forward;
@@ -194,15 +168,13 @@ class Robot
         state = gridEnum.ProcessingNextCommand;
       }
     }
-
+    
 
     // state End
     void end() {
       control.stop();
       state = gridEnum.End;
-      Serial.println("End");
     }
-
 
 
     // state ProcessingNextCommand
@@ -220,9 +192,9 @@ class Robot
       }
     };
 
+
     void processNextCommand(Command cmd)
     {
-
       target_x = cmd.x;
       target_y = cmd.y;
       target_time = cmd.time;
@@ -231,8 +203,8 @@ class Robot
       setStateByOrientation();
       direction = gridEnum.chooseDirection(
                     position_x, position_y, orientation, target_orientation);
-
     }
+
 
     Enums::Orientation getTargetOrientation(bool orderedCoordinates)
     {
@@ -282,20 +254,6 @@ class Robot
 
   private:
 
-    // called only if at least one of inner sensors is seeing the line
-    void followLine() {  
-      
-      if (sensors.getMiddle()) {                   
-        control.move(gridEnum.Forward);  
-      }
-      else if (!sensors.L_INNER && sensors.R_INNER) { 
-        control.move(gridEnum.Left);
-      }
-      else if ( sensors.R_INNER && !sensors.L_INNER){
-        control.move(gridEnum.Right);
-      }
-    }
-
     void checkPosition() {
 
       if (target_x == position_x)
@@ -316,7 +274,6 @@ class Robot
         target_orientation = gridEnum.chooseOrientation_x(position_x, target_x);
         setStateByOrientation();
       }
-
     }
 
     void setStateByOrientation() {

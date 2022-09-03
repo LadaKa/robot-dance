@@ -12,7 +12,7 @@ class Parser {
 
        A1N
        E1 T150
-       B2 T350
+       2B T350
 
     */
 

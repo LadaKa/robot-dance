@@ -5,6 +5,7 @@
 #include "Command.h"
 #include "Command.h"
 
+/* Command represents one step (coordinates and time) of given choreography */
 class Command
 {
   public:

@@ -4,6 +4,11 @@
 #include "Enums.h"
 #include "Command.h"
 
+/* 
+    Commands contains all steps of given choreography
+    and info about last executed step.
+*/
+
 class Commands
 {
   public:
@@ -23,10 +28,6 @@ class Commands
 
     bool hasNextCommand()
     {
-      //Serial.println("Has: ");
-      //Serial.println(last);
-     // Serial.println(first);
-     // Serial.println(last > -1 && first <= last);
       return (last > -1 && first <= last);
     }
 

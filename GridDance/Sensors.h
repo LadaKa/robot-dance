@@ -20,8 +20,6 @@ class Sensors
       MIDDLE  = 1 - digitalRead(5);
       L_INNER = 1 - digitalRead(4);
       L_OUTER = 1 - digitalRead(3);
-      //printSensors();
-      //Serial.println(L_INNER_LAST);
           
     }
 
@@ -43,15 +41,10 @@ class Sensors
       return (L_INNER || MIDDLE || R_INNER);
     }
 
-    bool getLeftINNER()
+    bool getLeftINNERValue()
     {
       // don't read again
       return L_INNER;
-    }
-
-    bool getLastLeftINNER()
-    {
-      return L_INNER_LAST;
     }
 
     int L_OUTER, L_INNER, MIDDLE, R_INNER, R_OUTER;

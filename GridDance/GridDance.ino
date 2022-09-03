@@ -1,10 +1,16 @@
+/*
+ * GridDance class: 
+ *  - setup of grid and robot 
+ *  - main loop
+ *  - processing of choreography
+ *  - button handler
+ */
+ 
 #include <Servo.h>
 #include "Enums.h"
 #include "Robot.h"
 #include "Parser.h"
 #include "Choreography.h"
-#include "Tests.h"
-
 #define MIN_PULSE  500
 #define MAX_PULSE 2500
 #define LEFT_PIN  12
@@ -13,14 +19,13 @@
 
 #define LED 11
 
-#define SPEED 200//300
+#define SPEED 200
 #define TURN_SPEED 40
 
 Robot robot;
 Enums gridEnum;
 Parser parser;
 Choreography choreography;
-Tests tests;
 
 int x_size;
 int y_size;
@@ -32,37 +37,28 @@ int lastButtonPressTime;
 volatile bool goingBackToStart = false;
 
 
-//  debugged: turning and moving forward (speed ~ 200)
-
-//  TODO:     correction while following line   - change rotation to pivot turning
-//            rename wheels (L/R) !!!
-
-
 void setup() {
 
-  Serial.begin(9600);         // TODO: use some other number
-
-  //  grid properties setup
+  Serial.begin(9600);         
+  
+  //  grid properties setup (maximal grid size is 9)
   x_size = 5;
   y_size = 5;
   gridEnum.SetSize(x_size, y_size);
 
   //  button setup
   pinMode(BUTTON_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
-
+  attachInterrupt(
+    digitalPinToInterrupt(BUTTON_PIN), onButtonPressed, FALLING);
+  lastButtonPressTime = 0;
+  
   //  led setup
   pinMode(LED, OUTPUT);
 
-  lastButtonPressTime = 0;
-
   //  robot setup
-
   robot.setMotorsAndSpeed(
     LEFT_PIN, RIGHT_PIN, MIN_PULSE, MAX_PULSE, SPEED, TURN_SPEED);
-
   robot.setState(gridEnum.BeforeStart);
-
 }
 
 
@@ -71,35 +67,35 @@ void loop() {
   if (goingBackToStart){
       robot.setState(gridEnum.GoingBackToStart);
       goingBackToStart = false;
-      Serial.println("Go back!");
   };
 
   Enums::State state = robot.getState();
   
   switch (state) {
-    case gridEnum.Testing:
-      return;
+    
     case gridEnum.BeforeStart:
       return;
+      
     case gridEnum.Turning:
       robot.turn();
       return;
+      
     case gridEnum.Running:
       robot.goToNextCrossing();
       return;
+      
     case gridEnum.Waiting:
       robot.wait();
       return;
-    case gridEnum.ProcessingNextCommand:
-    
-      Serial.println("ProcessingNextCommand");
       
+    case gridEnum.ProcessingNextCommand:
       robot.processNextCommandIfExists();
       return;
+      
     case gridEnum.GoingBackToStart:
-      Serial.println("GoingBackToStart");
       robot.goToStartPosition();
       return;
+      
     case gridEnum.End:
       return;
   }
@@ -109,18 +105,18 @@ void loop() {
 // input processing and setup of robot's commands
 void start(int current_time)
 {
-  Serial.println("Start.");
   String choreo;
   if (Serial.available() > 0) {
     choreo = Serial.readString();         // user input from console
+    Serial.println("Processing choreography from console.");
   }
   else {
     choreo = choreography.getDefault();   // pre-set choreography
   }
   processInputCommands(choreo);
+  
   robot.setStartTime(current_time);
   robot.setState(gridEnum.ProcessingNextCommand);
-  
   goingBackToStart = false;
 }
 
@@ -162,12 +158,11 @@ void onButtonPressed() {
   lastButtonPressTime = currentTime;
   
   switch (robot.getState()) {
+    
     case gridEnum.BeforeStart:
       start(currentTime);
       return;
-    case gridEnum.Testing:
-      tests.testButton();
-      return;
+      
     default:
       goingBackToStart = true;
       return;

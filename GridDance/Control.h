@@ -3,7 +3,9 @@
 
 #include "Motor.h"
 
-/* Control of robot left and right motors */
+/*  Control of robot left and right motors:
+    movement forward and turning (rotation or pivot turn)
+*/
 
 class Control     
 {
@@ -67,24 +69,7 @@ class Control
 
     void moveInOppositeDirection(Enums::Direction last_inner_sensor_side)
     {
-    
-      /*switch (lastDirection) {
-        case gridEnum.Left:
-          move(gridEnum.Right);
-          break;
-        case gridEnum.Right:
-          move(gridEnum.Left);
-          break;
-        default:
-          move(last_inner_sensor_side);
-          break;
-      }
-      delay(150);
-      */
       move(last_inner_sensor_side);
-      //delay(50);
-      //stop();
-      //delay(5000);
     }
 
     void stop()
