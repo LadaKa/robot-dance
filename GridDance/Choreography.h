@@ -36,7 +36,7 @@ class Choreography
    */
 
    String value;
-   const String defaultValue = "A3S B1 T100"; // "A1N E1 T150 B2 T350 3A T450 4C T567 D2 T700";
+   const String defaultValue = "A3S B1 T100";
 };
 
 #endif
