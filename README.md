@@ -5,6 +5,8 @@ Robot Dance on Grid
 
 Recorded videos of choreography samples:
 
+https://www.youtube.com/playlist?list=PL2udlYSlU3eweEpcfBJnC5iKzpMxXaxlp
+
  1.  Stairs:
  "A1N A2 T30 B2 T60 B3 T90 C3 T120 C4 T150 D4 T180 D5 T210 E5 T240"
  
